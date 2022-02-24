@@ -1,0 +1,7 @@
+Django
+
+gunicorn
+
+django-heroku
+
+django-bootstrap-v5
