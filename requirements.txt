@@ -7,3 +7,5 @@ django-heroku
 django-bootstrap-v5
 
 django-allauth
+
+django-google-maps
