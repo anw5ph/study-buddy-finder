@@ -23,4 +23,5 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name="index.html")),
     path('accounts/', include('allauth.urls')),
     path('logout', LogoutView.as_view()),
+    # path('', views.landingPageView.as_view(), name='landing'),
 ]
