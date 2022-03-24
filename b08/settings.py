@@ -13,6 +13,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 import django
+<<<<<<< HEAD
+=======
+from django.utils.encoding import force_str
+django.utils.encoding.force_text = force_str
+>>>>>>> cecdc89f6cd020952c12fd16931b6a96bca57845
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,6 +49,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'django_google_maps',
 ]
 
 MIDDLEWARE = [
@@ -161,6 +167,7 @@ SITE_ID = 2
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+<<<<<<< HEAD
 #calendar key
 GOOGLE_CALENDAR_API_KEY = ""
 
@@ -168,3 +175,6 @@ GOOGLE_CALENDAR_API_KEY = ""
 CALENDAR_NAMES = [
     'Im not sure what to put',
 ]
+=======
+GOOGLE_MAPS_API_KEY = 'AIzaSyC5n2sculxuvB2oeyTSpMahGVSymrAxuOg'
+>>>>>>> cecdc89f6cd020952c12fd16931b6a96bca57845

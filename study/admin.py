@@ -1,5 +1,9 @@
 from django.contrib import admin
+from .models import Location, Student, Study, Section, Course
+from django_google_maps import widgets as map_widgets
+from django_google_maps import fields as map_fields
 
+<<<<<<< HEAD
 # Register your models here.
 
 from models import Account, Calendar, Event
@@ -83,3 +87,15 @@ try:
     admin.site.register(Event, EventAdmin)
 except admin.sites.AlreadyRegistered:
     pass
+=======
+class LocationAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        map_fields.AddressField: {'widget': map_widgets.GoogleMapsAddressWidget},
+    }
+
+admin.site.register(Location, LocationAdmin)
+admin.site.register(Student)
+admin.site.register(Study)
+admin.site.register(Section)
+admin.site.register(Course)
+>>>>>>> cecdc89f6cd020952c12fd16931b6a96bca57845
