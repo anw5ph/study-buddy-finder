@@ -15,7 +15,24 @@
         <header class="container-fluid ps-4" style="background-color:#232D4B; border-bottom: 10px solid #E57200;">
             <nav class="navbar navbar-expand-lg navbar-light">
                 <a class="navbar-brand fw-bold fs-1 text-white" href="#">Study Buddy Finder</a>
-             
+    
+                <nav class="navbar navbar-expand-lg">
+                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                  <div class="navbar-nav"> 
+                    <a class="nav-item nav-link active text-white" href="/">Home</a>
+                    <a class="nav-item nav-link text-white" href="{% url 'study:courses' %}">My Courses</a>
+                    <a class="nav-item nav-link text-white" href="#">My Study Sessions</a>
+                    <a class="nav-item nav-link text-white" href="#">My Account</a>
+                    <a class="nav-item nav-link text-white" href="#">Logout</a>
+                  </div>
+                </div>
+                </nav>
+    
+    
+    
             </nav>
           </header>
 
