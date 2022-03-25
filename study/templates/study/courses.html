@@ -30,7 +30,7 @@
                         {% if courses_list %}
                             {% for course in courses_list %}
                                 {% if course.student_course == user %}
-                                    <button type="button" class="btn btn-outline-primary">{{ course.subject }} {{ course.course_number}}-{{course.course_section}} {{course.course_name}} </button>
+                                    <button type="button" class="btn btn-outline-secondary" >{{ course.subject }} {{ course.course_number}}-{{course.course_section}} {{course.course_name}} </button>
                                     <br><br><br>
                                 {% endif %}
                             {% endfor %} 
