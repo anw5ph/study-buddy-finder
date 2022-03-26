@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'django_google_maps',
+    'whitenoise.runserver_nostatic'
 ]
 
 MIDDLEWARE = [
@@ -92,9 +93,8 @@ DATABASES = {
     }
 }
 
-# db_from_env = dj_database_url.config(conn_max_age=600)
-# DATABASES['default'].update(db_from_env)
-DATABASES['default'] = dj_database_url.config()
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIAL_URL = '/media/'
