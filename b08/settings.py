@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'django_google_maps',
+    'whitenoise.runserver_nostatic'
 ]
 
 MIDDLEWARE = [
