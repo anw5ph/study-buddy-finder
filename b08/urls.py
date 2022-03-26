@@ -19,9 +19,14 @@ from django.views.generic import TemplateView
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
+    # Admin Site
     path('admin/', admin.site.urls),
+    # Landing page
     path('', TemplateView.as_view(template_name="index.html")),
+    # Site path for all course pages
+    path('study/', include('study.urls')),
+    # Accounts page
     path('accounts/', include('allauth.urls')),
+    #Logout page
     path('logout', LogoutView.as_view()),
-    # path('', views.landingPageView.as_view(), name='landing'),
 ]
