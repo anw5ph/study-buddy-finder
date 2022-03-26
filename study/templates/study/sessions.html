@@ -1,0 +1,35 @@
+{% extends "study/base.html" %}
+{% load socialaccount %}
+
+{% block description %}courses{% endblock %}
+{% block title %}My Courses{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<br>
+<h1><center>My Sessions</center></h1>
+<div>
+  <a class="btn btn-success" style="position:absolute; margin-right:2px; top:15%; right:0;" href="#" role="button" >Add Session</a>
+
+</div>
+<br><br>
+
+
+<div class="container h-100" style="top:50%; bottom:50%; width:100%;">
+  <div class="row">
+    {% if sessions_list %}
+    {% for session in sessions_list %}
+    {% if session.organizer == user %}
+    <button type="button" class="btn btn-outline-secondary" >{{ session.study_subject }}</button>
+    <br><br><br>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+  </div>
+</div>
+
+{% else %}
+<a href="{% provider_login_url 'google' %}">Login With Google</a>
+{% endif %}
+{% endblock %}

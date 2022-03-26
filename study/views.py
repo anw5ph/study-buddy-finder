@@ -50,3 +50,10 @@ def uploadCourse(request):
 
     return HttpResponseRedirect(reverse('study:course-add'))
 
+class SessionView(generic.ListView):
+    template_name = 'study/sessions.html'
+    context_object_name = 'sessions_list'
+
+    def get_queryset(self):
+        return Study.objects.all()
+
