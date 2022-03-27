@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'django_google_maps',
-    'whitenoise.runserver_nostatic'
+    # 'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # 'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'b08.urls'
@@ -86,15 +86,25 @@ WSGI_APPLICATION = 'b08.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR/ 'db.sqlite3',
-    }
-}
+import sys
 
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR/ 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES= {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'd4en50skg510m4',
+            'USER': 'pmjdtylqmzqogc',
+            'PASSWORD': '629669d27d7fc1df086d6b7ff0c888c54277e6e1c1626440a9adb4f593c01415',
+            'HOST': 'ec2-3-227-195-74.compute-1.amazonaws.com',
+            'PORT': '5432', }
+    }
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIAL_URL = '/media/'
@@ -138,7 +148,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -164,7 +174,7 @@ SOCIALACCOUNT_PROVIDERS = {
             'email',
         ],
         'AUTH_PARAMS': {
-            'access_type': 'offline',
+            'access_type': 'online',
         }
     }
 }
