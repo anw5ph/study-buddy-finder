@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -50,3 +51,29 @@ def uploadCourse(request):
 
     return HttpResponseRedirect(reverse('study:course-add'))
 
+
+
+
+
+class StudyAddView(generic.ListView):
+    template_name = 'study/addStudy.html'
+    context_object_name = 'study_add_form'
+
+    def get_queryset(self):
+        return Course.objects.all()  
+
+def addStudy(request):
+    try:
+        session = Study(
+            organizer = request.student, #not sure what to put here
+            date = request.POST['date'], #DateTime should accomodate for most conventional time inputs
+            attendees = request.student, #not sure what to put here
+            location = request.POST['location'], 
+            study_subject = request.POST['subject'],
+            study_number = request.POST['course_number'],
+            study_name = request.POST['study_name'],
+            study_section = request.POST['study_section'] 
+            )
+        return HttpResponseRedirect(reverse('study:add-session'))
+    except:
+        return HttpResponseRedirect(reverse('study:add-session'))
