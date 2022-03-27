@@ -58,21 +58,21 @@ class AllSessionView(generic.ListView):
     context_object_name = 'sessions_list'
 
     def get_queryset(self):
-        return Course.objects.all()
+        return Study.objects.all()
 
 class SessionView(generic.ListView):
     template_name = 'study/session.html'
     context_object_name = 'session_form'
 
     def get_queryset(self):
-        return Course.objects.all()
+        return Study.objects.all()
 
 class StudyAddView(generic.ListView):
     template_name = 'study/addStudy.html'
     context_object_name = 'study_add_form'
 
     def get_queryset(self):
-        return Course.objects.all()  
+        return Study.objects.all()  
 
 def addStudy(request):
     try:
@@ -86,6 +86,7 @@ def addStudy(request):
             study_name = request.POST['study_name'],
             study_section = request.POST['study_section'] 
             )
+        session.save()
         return HttpResponseRedirect(reverse('study:add-session'))
     except:
         return HttpResponseRedirect(reverse('study:add-session'))

@@ -1,0 +1,37 @@
+{% extends "study/base.html" %}
+{% load socialaccount %}
+
+{% block description %}courses{% endblock %}
+{% block title %}My Courses{% endblock %}
+{% block courses-link-style %}fw-bold{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<br>
+<h1><center>My Sessions</center></h1>
+<div>
+  <a class="btn btn-success" style="position:absolute; margin-right:2px; top:15%; right:0;" href="{% url 'study:add-session' %}" role="button" >Add Session</a>
+
+
+</div>
+<br><br>
+
+
+<div class="container h-100" style="top:50%; bottom:50%; width:100%;">
+  <div class="row">
+    {% if sessions_list %}
+    {% for study in sessions_list %}
+    {% if study.attendees == student %} <!--Not sure if this line is fully correct-->
+    <button type="button" class="btn btn-outline-secondary" >{{ study.study_name }} {{study.study_subject}}-{{study.study_number}} {{ study.location }} {{ study.date }} {{ study.attendees }}  </button>
+    <br><br><br>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+  </div>
+</div>
+
+{% else %}
+<a href="{% provider_login_url 'google' %}">Login With Google</a>
+{% endif %}
+{% endblock %}
