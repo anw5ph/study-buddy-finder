@@ -53,16 +53,16 @@ def uploadCourse(request):
 
 
 
-class AllSessionView(generic.ListView):
-    template_name = 'study/sessions.html'
-    context_object_name = 'sessions_list'
-
-    def get_queryset(self):
-        return Study.objects.all()
+#class AllSessionView(generic.ListView):
+#    template_name = 'study/sessions.html'
+#    context_object_name = 'sessions_list'
+#
+#    def get_queryset(self):
+#        return Study.objects.all()
 
 class SessionView(generic.ListView):
-    template_name = 'study/session.html'
-    context_object_name = 'session_form'
+    template_name = 'study/sessions.html'
+    context_object_name = 'sessions_list'
 
     def get_queryset(self):
         return Study.objects.all()
