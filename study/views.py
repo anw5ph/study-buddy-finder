@@ -48,5 +48,5 @@ def uploadCourse(request):
     else:
         Course.objects.create(subject=request.POST['subject'], course_number=request.POST['course_number'], course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user)
 
-    return HttpResponseRedirect(reverse('study:course-add'))
+    return HttpResponseRedirect(reverse('study:courses'))
 
