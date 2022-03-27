@@ -243,8 +243,11 @@ class CourseViewTests(TestCase):
         """
         If no courses have been added, an appropriate message is displayed.
         """
+        user = create_user()
+        self.client.force_login(user)
         response = self.client.get(reverse('study:courses'))
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "You have not added any courses yet!")
         self.assertQuerysetEqual(response.context['courses_list'], [])
 
     def test_one_course(self):
@@ -252,6 +255,7 @@ class CourseViewTests(TestCase):
         One course is displayed.
         """
         user = create_user()
+        self.client.force_login(user)
         course = create_course("CS", "3240", "Test Course", "1", user)
         response = self.client.get(reverse('study:courses'))
         self.assertQuerysetEqual(response.context['courses_list'], [course])
@@ -261,7 +265,26 @@ class CourseViewTests(TestCase):
         Both courses are displayed.
         """
         user = create_user()
+        self.client.force_login(user)
         course = create_course("CS", "3240", "Test Course", "1", user)
         course2 = create_course("FREN", "1010", "français", "2", user)
         response = self.client.get(reverse('study:courses'))
         self.assertQuerysetEqual(response.context['courses_list'], [course, course2], ordered=False)
+
+
+class CourseAddTests(TestCase):
+    """
+    Tests form validation
+    """
+    def test_invalid_course(self):
+        user = create_user()
+        self.client.force_login(user)
+        response = self.client.post(reverse('study:upload'), {'subject':'', 'course_number':'', 'course_name':'', 'course_section':'', 'student_course':user}, follow=True)
+        self.assertContains(response, "One or more required fields were left empty.", html=True)
+
+    def test_duplicate_course(self):
+        user = create_user()
+        self.client.force_login(user)
+        create_course("CS", "3240", "Test Course", "1", user)
+        response = self.client.post(reverse('study:upload'), {'subject':'CS', 'course_number':'3240', 'course_name':'Test Course', 'course_section':'1', 'student_course':user}, follow=True)
+        self.assertContains(response, "This course has already been added.")
