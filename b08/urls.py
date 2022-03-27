@@ -22,11 +22,11 @@ urlpatterns = [
     # Admin Site
     path('admin/', admin.site.urls),
     # Landing page
-    path('', TemplateView.as_view(template_name="index.html")),
+    path('', TemplateView.as_view(template_name="index.html"), name='home'),
     # Site path for all course pages
     path('study/', include('study.urls')),
     # Accounts page
     path('accounts/', include('allauth.urls')),
     #Logout page
-    path('logout', LogoutView.as_view()),
+    path('logout', LogoutView.as_view(), name='logout'),
 ]

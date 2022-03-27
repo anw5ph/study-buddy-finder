@@ -9,7 +9,7 @@ urlpatterns = [
     #path('<int:course-number>-<int:course-section>/session/<int:pk>/', views.SessionView.as_view(), name='session'),
     # Add study session
     #path('<int:course-number>-<int:course-section>/session-add/', views.AddSession.as_view(), name='add-session'),
-    
+
     # View courses
     path('courses/', views.CourseView.as_view(), name='courses'),
     # Add course
