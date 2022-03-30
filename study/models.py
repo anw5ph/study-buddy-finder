@@ -32,9 +32,8 @@ class Study(models.Model):
     study_name = models.CharField(max_length=100, default='')
     study_section = models.CharField(max_length=3, default='')
 
-
     def __str__(self):
-        return self.organizer
+        return self.study_subject + " " + self.study_number + " " + self.study_name 
 
 class Course(models.Model):
     subject = models.CharField(max_length=4)

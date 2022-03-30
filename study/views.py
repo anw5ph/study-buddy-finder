@@ -52,3 +52,11 @@ def uploadCourse(request):
         Course.objects.create(subject=request.POST['subject'], course_number=request.POST['course_number'], course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user)
 
     return HttpResponseRedirect(reverse('study:courses'))
+
+class SessionView(generic.ListView):
+    template_name = 'study/sessions.html'
+    context_object_name = 'sessions_list'
+
+    def get_queryset(self):
+        return Study.objects.all()
+
