@@ -40,7 +40,7 @@ class Course(models.Model):
     course_number = models.CharField(max_length=4, default='')
     course_name = models.CharField(max_length=100, default='')
     course_section = models.CharField(max_length=3, default='')
-    student_course = models.OneToOneField(User, on_delete=models.CASCADE, default='')
+    student_course = models.ForeignKey(User, on_delete=models.CASCADE, default='')
 
     def __str__(self):
         return self.subject + " " + self.course_number
