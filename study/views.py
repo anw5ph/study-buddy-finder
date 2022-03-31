@@ -50,3 +50,10 @@ def uploadCourse(request):
 
     return HttpResponseRedirect(reverse('study:courses'))
 
+class MyAccountView(generic.ListView):
+    template_name = 'study/myAccount.html'
+    context_object_name = 'student_list'
+
+    def get_queryset(self):
+        return Student.objects.all()
+

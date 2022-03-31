@@ -1,0 +1,39 @@
+{% extends "study/base.html" %}
+{% load socialaccount %}
+
+{% block description %}account{% endblock %}
+{% block title %}My Account{% endblock %}
+{% block account-link-style %}fw-bold{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<br>
+
+
+
+
+<div class="container h-100" style="top:50%; bottom:50%; width:100%;">
+  <div class="row">
+    <h1><center>Account Information</center></h1>
+    <hr>
+    {% if student_list %}
+    {% for student in student_list %}
+    {% if student == user %}
+        <h3>Name: {{ student.first_name }} {{ student.last_name }}</h3>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    <h3>Name: {{ user.first_name }} {{ user.last_name }} </h3>
+    <h3>Username: {{ user.username }} </h3>
+    <h3>Email: {{ user.email }} </h3> 
+   
+    <br><br><br>
+   
+
+  </div>
+</div>
+
+{% else %}
+<a href="{% provider_login_url 'google' %}">Login With Google</a>
+{% endif %}
+{% endblock %}
