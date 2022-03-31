@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import dj_database_url
 import django
+import sys
 from django.utils.encoding import force_str
 django.utils.encoding.force_text = force_str
 
@@ -185,3 +186,21 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 GOOGLE_MAPS_API_KEY = 'AIzaSyC5n2sculxuvB2oeyTSpMahGVSymrAxuOg'
+
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR/ 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES= {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'd4en50skg510m4',
+            'USER': 'pmjdtylqmzqogc',
+            'PASSWORD': '629669d27d7fc1df086d6b7ff0c888c54277e6e1c1626440a9adb4f593c01415',
+            'HOST': 'ec2-3-227-195-74.compute-1.amazonaws.com',
+            'PORT': '5432', }
+    }

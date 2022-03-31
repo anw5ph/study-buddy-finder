@@ -1,4 +1,5 @@
 {% load socialaccount %}
+{% load static %}
 <html lang="en" class="h-100">
 <head>
   <meta charset="UTF-8">
@@ -25,6 +26,11 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
+            <a class="nav-link" href="https://collab.its.virginia.edu/portal" target="_blank" rel="noopener noreferrer">
+              <img src="{% static 'study/collab.png' %}" alt="Collab Logo" style="width:25px;height:25px;">
+            </a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link text-white fw-bold" aria-current="page" href="{% url 'home' %}">Home</a>
           </li>
           {% if user.is_authenticated %}
@@ -32,7 +38,7 @@
             <a class="nav-link text-white" href="{% url 'study:courses' %}">My Courses</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" href="#">My Study Sessions</a>
+            <a class="nav-link text-white" href="{% url 'study:sessions' %}">My Study Sessions</a>
           </li>
           <li class="nav-item">
             <a class="nav-link text-white" href="{% url 'study:my-account' %}">My Account</a>

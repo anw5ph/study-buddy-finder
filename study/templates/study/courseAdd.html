@@ -18,7 +18,7 @@
     <div class="row justify-content-center">
       <fieldset>
 
-        {% if error_message %}<center><p style="color:red"><strong>One or more of the fields are empty.</strong></p></center>{% endif %}
+        {% if error_message %}<center><p style="color:red"><strong>{{ error_message }}</strong></p></center>{% endif %}
 
         Subject:
         <div class="form-floating mb-3">

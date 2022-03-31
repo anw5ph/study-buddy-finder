@@ -18,6 +18,8 @@ urlpatterns = [
     # Upload course
     path('course-add/upload', views.uploadCourse, name='upload'),
 
-    # My Account
-    path('my-account', views.MyAccountView.as_view(), name='my-account'),
+    # View sessions
+    path('sessions/', views.SessionView.as_view(), name='sessions'),
+
+    # path('my-account', views.MyAccountView.as_view(), name='my-account'),
 ]

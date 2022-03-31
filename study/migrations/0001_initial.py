@@ -54,7 +54,7 @@ class Migration(migrations.Migration):
                 ('course_number', models.CharField(default='', max_length=4)),
                 ('course_name', models.CharField(default='', max_length=100)),
                 ('course_section', models.CharField(default='', max_length=3)),
-                ('student_course', models.OneToOneField(default='', on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('student_course', models.ForeignKey(default='', on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]
