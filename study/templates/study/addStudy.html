@@ -12,7 +12,7 @@
 <h1><center>Add Study Session</center></h1>
 
 <div class="container h-100">
-  <form class="form-example" action="{% url 'study:add-session' %}" method="post">
+  <form class="form-example" action="{% url 'study:uploadSession' %}" method="post">
     {% csrf_token %}
 
     <div class="row justify-content-center">

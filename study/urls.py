@@ -7,10 +7,8 @@ urlpatterns = [
     #path('<int:course-number>-<int:course-section>/', views.AllSessionView.as_view(), name='all-sessions'),
     # Individual study session
     #path('<int:course-number>-<int:course-section>/session/<int:pk>/', views.SessionView.as_view(), name='session'),
-    # Add study session
-    #path('<int:course-number>-<int:course-section>/session-add/', views.StudyAddView.as_view(), name='add-session'),
-    # Upload study session
-    #path('<int:course-number>-<int:course-section>/session-add/upload', views.addStudy, name='add-session'),
+    
+    
 
     # View courses
     path('courses/', views.CourseView.as_view(), name='courses'),
@@ -20,4 +18,13 @@ urlpatterns = [
     # Upload course
     path('course-add/upload', views.uploadCourse, name='upload'),
     # path('my-account', views.MyAccountView.as_view(), name='my-account'),
+
+    # View sessions
+    path('sessions/', views.SessionView.as_view(), name='sessions'),
+
+    # Add study session
+    path('session-add/', views.SessionAddView.as_view(), name='add-session'),
+    
+    # Upload study session
+    path('session-add/upload', views.uploadSession, name='uploadSession'),
 ]
