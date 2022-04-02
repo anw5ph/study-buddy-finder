@@ -1,0 +1,70 @@
+{% extends "study/base.html" %}
+{% load socialaccount %}
+
+{% block description %}add study session{% endblock %}
+{% block title %}Add Study Session{% endblock %}
+{% block courses-link-style %}fw-bold{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<br>
+
+<h1><center>Add Study Session</center></h1>
+
+<div class="container h-100">
+  <form class="form-example" action="{% url 'study:uploadSession' %}" method="post">
+    {% csrf_token %}
+
+    <div class="row justify-content-center">
+      <fieldset>
+
+        {% if error_message %}<center><p style="color:red"><strong>One or more of the fields are empty.</strong></p></center>{% endif %}
+
+        Date:
+        <div class="form-floating mb-3">
+          <input class="form-control" type="text" placeholder="Default Input" name="date" id="date" value="{{ date }}">
+          <label style="color:gray;" for="date"><i>Date...</i></label>
+        </div>
+
+        Location:
+        <div class="form-floating mb-3">
+          <input class="form-control" type="text" placeholder="Default Input" name="location" id="location" value="{{ location }}">
+          <label style="color:gray;"for="location"><i>Location...</i></label>
+        </div>
+
+        Subject:
+        <div class="form-floating mb-3">
+          <input class="form-control" type="text" placeholder="Default Input" name="subject" id="subject" value="{{ subject }}">
+          <label style="color:gray;"for="subject"><i>Subject...</i></label>
+        </div>
+
+        StudyNumber:
+        <div class="form-floating mb-3">
+          <input class="form-control" type="text" placeholder="Default Input" name="course_number" id="course_number" value="{{ course_number }}">
+          <label style="color:gray;"for="course_number"><i>Course Number...</i></label>
+        </div>
+
+        StudyName:
+        <div class="form-floating mb-3">
+          <input class="form-control" type="text" placeholder="Default Input" name="study_name" id="study_name" value="{{ study_name }}">
+          <label style="color:gray;"for="study_name"><i>Study Name...</i></label>
+        </div>
+
+        StudySection:
+        <div class="form-floating mb-3">
+          <input class="form-control" type="text" placeholder="Default Input" name="study_section" id="study_section" value="{{ study_section }}">
+          <label style="color:gray;"for="study_section"><i>Study Section...</i></label>
+        </div>
+
+        
+
+      </fieldset>
+      <button type="submit" class="btn btn-primary btn-block">Upload</button>
+      <!-- <input style="background-color: #f64c72; color:white;" type="submit" value="Submit"> -->
+    </div>
+  </form>
+</div>
+{% else %}
+<a href="{% provider_login_url 'google' %}">Login With Google</a>
+{% endif %}
+{% endblock %}

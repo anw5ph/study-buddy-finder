@@ -58,5 +58,40 @@ class SessionView(generic.ListView):
     context_object_name = 'sessions_list'
 
     def get_queryset(self):
-        return Study.objects.all()
+        return Study.objects.all()  
 
+class SessionAddView(generic.ListView):
+    template_name = 'study/addStudy.html'
+    context_object_name = 'session_add_form'
+
+    def get_queryset(self):
+        return Course.objects.all()
+
+def uploadSession(request):
+    if ():
+        if (
+            len(date = request.POST['date']) == 0 or 
+            len(location = request.POST['location']) == 0 or 
+            len(study_subject = request.POST['subject']) == 0 or 
+            len(study_number = request.POST['course_number']) == 0 or 
+            len(study_name = request.POST['study_name']) == 0 or 
+            len(study_section = request.POST['study_section']) == 0
+        ):
+            return render(request, 'study/addStudy.html', {
+            'error_message': "One or more required fields were left empty.",
+            })
+    else:
+        Study.objects.create(
+
+            organizer = request.student, #not sure what to put here
+            date = request.POST['date'], #DateTime should accomodate for most conventional time inputs
+            attendees = request.student, #not sure what to put here
+            location = request.POST['location'], 
+            study_subject = request.POST['subject'],
+            study_number = request.POST['course_number'],
+            study_name = request.POST['study_name'],
+            study_section = request.POST['study_section']
+
+        )
+
+        return HttpResponseRedirect(reverse('study:sessions'))
