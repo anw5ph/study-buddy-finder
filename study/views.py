@@ -69,7 +69,6 @@ def uploadCourse(request):
 def MyAccountView(request):
 
     stud, _ = Student.objects.get_or_create(student_user=request.user)
-    print(Student.objects.all())
 
     return render(request, 'study/myAccount.html', {
         'first_name': stud.first_name,
