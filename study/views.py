@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 
-from .models import Location, Student, Study, Course
+from .models import Student, Study, Course
 # from .forms import LocationForm
 
 # Create your views here.
