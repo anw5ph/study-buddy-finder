@@ -21,5 +21,10 @@ urlpatterns = [
     # View sessions
     path('sessions/', views.SessionView.as_view(), name='sessions'),
 
-    # path('my-account', views.MyAccountView.as_view(), name='my-account'),
+    # My Account
+    path('my-account', views.MyAccountView, name='my-account'),
+
+    path('my-account/update-profile/upload',
+         views.uploadProfile, name='upload-profile'),
+
 ]

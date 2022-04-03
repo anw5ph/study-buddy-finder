@@ -1,0 +1,127 @@
+{% extends "study/base.html" %}
+{% load socialaccount %}
+
+{% block description %}account{% endblock %}
+{% block title %}My Account{% endblock %}
+{% block account-link-style %}fw-bold{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<br>
+<div class="container h-100" style="top:50%; bottom:50%; width:100%;">
+  <div class="row">
+    <h1><center>User Profile</center></h1>
+    <hr>
+
+    <form class="form-example" action="{% url 'study:upload-profile' %}" method="post">
+      {% csrf_token %}
+    
+      <div class="row justify-content-center">
+        <fieldset>
+    
+            {% if error_message %}<center><p style="color:red"><strong>{{ error_message }}</strong></p></center>{% endif %}
+    
+            <br>
+            <div class="form-group row">
+              <label for="first_name", class="col-sm-2 col-form-label">First Name</label>
+              <div class="col-sm-10">
+                <input class="form-control" type="text" placeholder="First Name" name="first_name" id="first_name" value="{{ first_name }}">
+              </div>             
+            </div>
+            <br>
+
+            <div class="form-group row">
+              <label for="last_name", class="col-sm-2 col-form-label">Last Name</label>
+              <div class="col-sm-10">
+                <input class="form-control" type="text" placeholder="Last Name" name="last_name" id="last_name" value="{{ last_name }}">
+              </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+              <label for="pref_name", class="col-sm-2 col-form-label">Preferred Name</label>
+              <div class="col-sm-10">
+                <input class="form-control" type="text" placeholder="Preferred Name" name="pref_name" id="pref_name" value="{{ pref_name }}">
+              </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+              <label for="computing_id", class="col-sm-2 col-form-label">Computing ID</label>
+              <div class="col-sm-10">
+                <input class="form-control" type="text" placeholder="Computing ID" name="computing_id" id="computing_id" value="{{ computing_id }}">
+              </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+              <label for="user_name", class="col-sm-2 col-form-label">Username</label>
+              <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" name="user_name" id="user_name" value="{{ user.username }}">
+              </div>   
+            </div>
+            <br>
+
+            <div class="form-group row">
+              <label for="user_email", class="col-sm-2 col-form-label">Email</label>
+              <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext"  name="user_email" id="user_email" value="{{ user.email }}">
+              </div>   
+            </div>
+            <br>
+
+            <div class="form-group row">
+              <label for="school_year", class="col-sm-2 col-form-label">School Year</label>
+              <div class="col-sm-10">
+                <input class="form-control" type="number" placeholder="1" name="school_year" id="school_year" value="{{ school_year }}">
+              </div>
+            </div>
+            <br>
+
+            <div class="form-group row">
+              <label for="bio", class="col-sm-2 col-form-label">Bio</label>
+              <div class="col-sm-10">
+                <textarea rows="8" cols="25"class="form-control" type="text" name="bio" id="bio">{{ bio }}</textarea>
+                <!-- <input class="form-control" type="text" placeholder="None" name="bio" id="bio" value="{{ bio }}"> -->
+              </div>
+            </div>
+            <br>
+  
+        </fieldset>
+        
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col text-center">
+            <button type="submit" class="btn btn-primary btn-block">Update</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!-- {% if student_list %}
+    {% for student in student_list %}
+    {% if student == user %}
+        <h3>Name: {{ student.first_name }} {{ student.last_name }} ( {{ student.pronouns }} )</h3>
+        <h3>Preferred Name: {{ student.pref_name }} </h3>
+        <h3>Computing ID: {{ student.computing_id }} </h3>
+        <h3>Username: {{ user.username }} </h3>
+        <h3>Email: {{ user.email }}</h3>
+        <h3>School Year: {{ student.year }}</h3>
+        <h3>Bio: </h3>
+    {% endif %}
+    {% endfor %}
+    {% else %}
+    <p class="text-center">You have not completed your profile yet!</p>
+    {% endif %}
+    <h3>Username: {{ user.username }} </h3>
+    <h3>Email: {{ user.email }} </h3>  -->
+  
+    <br><br><br>
+  
+  </div>
+</div>
+
+{% else %}
+<a href="{% provider_login_url 'google' %}">Login With Google</a>
+{% endif %}
+{% endblock %}
