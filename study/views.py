@@ -1,3 +1,4 @@
+from re import template
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -58,12 +59,42 @@ def uploadCourse(request):
     return HttpResponseRedirect(reverse('study:courses'))
 
 
-class MyAccountView(generic.ListView):
-    template_name = 'study/myAccount.html'
-    context_object_name = 'student_list'
+# class MyAccountView(generic.ListView):
+#     template_name = 'study/myAccount.html'
+#     # context_object_name = 'profile_form'
 
-    def get_queryset(self):
-        return Student.objects.all()
+#     def get_queryset(self):
+#         return Student.objects.all()
+
+def MyAccountView(request):
+
+    stud, _ = Student.objects.get_or_create(student_user=request.user)
+    print(Student.objects.all())
+
+    return render(request, 'study/myAccount.html', {
+        'first_name': stud.first_name,
+        'last_name': stud.last_name,
+        'computing_id': stud.computing_id,
+        'pref_name': stud.pref_name,
+        'school_year': stud.school_year,
+        'bio': stud.bio,
+    })
+
+
+def uploadProfile(request):
+
+    stud = Student.objects.get(student_user=request.user)
+
+    if request.method == "POST":
+        stud.first_name = request.POST['first_name']
+        stud.last_name = request.POST['last_name']
+        stud.computing_id = request.POST['computing_id']
+        stud.pref_name = request.POST['pref_name']
+        stud.school_year = request.POST['school_year']
+        stud.bio = request.POST['bio']
+        stud.save()
+
+    return HttpResponseRedirect(reverse('study:my-account'))
 
 
 class SessionView(generic.ListView):

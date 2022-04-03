@@ -2,8 +2,10 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django_google_maps import fields as map_fields
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.
+
 
 class Location(models.Model):
     address = map_fields.AddressField(max_length=200)
@@ -14,18 +16,25 @@ class Location(models.Model):
 
 
 class Student(models.Model):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-    computing_id = models.CharField(max_length=7)
+    student_user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, default=None)
+    first_name = models.CharField(max_length=30, default='')
+    last_name = models.CharField(max_length=30, default='')
+    computing_id = models.CharField(max_length=7, default='')
+    pref_name = models.CharField(max_length=30, default='')
+    school_year = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(4)], default=1)
+    bio = models.CharField(max_length=2600, default='')
 
     def __str__(self):
-        return self.computing_id
+        return str(self.student_user.pk)
 
 
 class Study(models.Model):
     organizer = models.ForeignKey(Student, on_delete=models.CASCADE)
     date = models.DateTimeField()
-    attendees = models.ManyToManyField(Student, related_name='student_attendees')
+    attendees = models.ManyToManyField(
+        Student, related_name='student_attendees')
     location = models.CharField(max_length=30)
     study_subject = models.CharField(max_length=4, default='')
     study_number = models.CharField(max_length=4, default='')
@@ -33,14 +42,16 @@ class Study(models.Model):
     study_section = models.CharField(max_length=3, default='')
 
     def __str__(self):
-        return self.study_subject + " " + self.study_number + " " + self.study_name 
+        return self.study_subject + " " + self.study_number + " " + self.study_name
+
 
 class Course(models.Model):
     subject = models.CharField(max_length=4)
     course_number = models.CharField(max_length=4, default='')
     course_name = models.CharField(max_length=100, default='')
     course_section = models.CharField(max_length=3, default='')
-    student_course = models.ForeignKey(User, on_delete=models.CASCADE, default='')
+    student_course = models.ForeignKey(
+        User, on_delete=models.CASCADE, default='')
 
     def __str__(self):
         return self.subject + " " + self.course_number
