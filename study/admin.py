@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Student, Study, Course #, Location
+from .models import Student, Study, Course  # , Location
 # from django_google_maps import widgets as map_widgets
 # from django_google_maps import fields as map_fields
 
@@ -9,6 +9,13 @@ from .models import Student, Study, Course #, Location
 #     }
 
 # admin.site.register(Location, LocationAdmin)
-admin.site.register(Student)
+
+
+class StudentAdmin(admin.ModelAdmin):
+    list_display = ('computing_id', 'last_name', 'first_name',
+                    'pref_name', 'school_year', 'bio', 'student_user')
+
+
+admin.site.register(Student, StudentAdmin)
 admin.site.register(Study)
 admin.site.register(Course)

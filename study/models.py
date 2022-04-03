@@ -27,7 +27,7 @@ class Student(models.Model):
     bio = models.CharField(max_length=2600, default='')
 
     def __str__(self):
-        return str(self.student_user.pk)
+        return f"{self.last_name}, {self.first_name}"
 
 
 class Course(models.Model):
