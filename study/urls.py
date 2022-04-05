@@ -3,6 +3,7 @@ from . import views
 
 app_name = 'study'
 urlpatterns = [
+
     # Study sessions for a course
     #path('<int:course-number>-<int:course-section>/', views.AllSessionView.as_view(), name='all-sessions'),
     # Individual study session
@@ -27,4 +28,9 @@ urlpatterns = [
     
     # Upload study session
     path('session-add/upload', views.uploadSession, name='uploadSession'),
+    # My Account
+    path('my-account', views.MyAccountView, name='my-account'),
+
+    path('my-account/update-profile/upload', views.uploadProfile, name='upload-profile'),
+
 ]
