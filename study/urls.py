@@ -28,5 +28,10 @@ urlpatterns = [
     #path(/session/<int:pk>/', views.SessionView.as_view(), name='session'),
     # Add study session
 
-    # path('my-account', views.MyAccountView.as_view(), name='my-account'),
+    # My Account
+    path('my-account', views.MyAccountView, name='my-account'),
+
+    path('my-account/update-profile/upload',
+         views.uploadProfile, name='upload-profile'),
+
 ]

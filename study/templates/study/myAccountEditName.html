@@ -1,0 +1,50 @@
+{% extends "study/base.html" %}
+{% load socialaccount %}
+
+{% block description %}account{% endblock %}
+{% block title %}My Account{% endblock %}
+{% block account-link-style %}fw-bold{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<br>
+
+<div class="container h-100" style="top:50%; bottom:50%; width:100%;">
+  <div class="row">
+
+    <h1><center>Update Name</center></h1>
+
+    <form class="form-example" action="{% url 'study:upload-name' %}" method="post">
+      {% csrf_token %}
+    
+      <div class="row justify-content-center">
+        <fieldset>
+    
+            {% if error_message %}<center><p style="color:red"><strong>{{ error_message }}</strong></p></center>{% endif %}
+    
+            First Name:
+            <div class="form-floating mb-3">
+              <input class="form-control" type="text" placeholder="Default Input" name="first_name" id="first_name" value="{{ first_name }}" required minlength="1">
+              <label style="color:gray;" for="first_name"><i>First Name...</i></label>
+            </div>
+    
+            Last Name:
+            <div class="form-floating mb-3">
+              <input class="form-control" type="text" placeholder="Default Input" name="last_name" id="last_name" value="{{ last_name }}" required minlength="1">
+              <label style="color:gray;"for="last_name"><i>Last Name...</i></label>
+            </div>
+    
+        </fieldset>
+        <button type="submit" class="btn btn-primary btn-block">Update</button>
+      </div>
+    </form>
+    
+   
+
+  </div>
+</div>
+
+{% else %}
+<a href="{% provider_login_url 'google' %}">Login With Google</a>
+{% endif %}
+{% endblock %}

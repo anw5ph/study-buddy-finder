@@ -1,10 +1,11 @@
+from re import template
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 
-from .models import Location, Student, Study, Course
+from .models import Student, Study, Course
 # from .forms import LocationForm
 
 # Create your views here.
@@ -24,6 +25,7 @@ from .models import Location, Student, Study, Course
 #    def get_queryset(self):
 #        return Location.objects
 
+
 class CourseView(generic.ListView):
     template_name = 'study/courses.html'
     context_object_name = 'courses_list'
@@ -31,12 +33,14 @@ class CourseView(generic.ListView):
     def get_queryset(self):
         return Course.objects.all()
 
+
 class CourseAddView(generic.ListView):
     template_name = 'study/courseAdd.html'
     context_object_name = 'course_add_form'
 
     def get_queryset(self):
         return Course.objects.all()
+
 
 def uploadCourse(request):
 
@@ -49,16 +53,56 @@ def uploadCourse(request):
             'error_message': "This course has already been added.",
         })
     else:
-        Course.objects.create(subject=request.POST['subject'], course_number=request.POST['course_number'], course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user)
+        Course.objects.create(subject=request.POST['subject'], course_number=request.POST['course_number'],
+                              course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user)
 
     return HttpResponseRedirect(reverse('study:courses'))
+
+
+# class MyAccountView(generic.ListView):
+#     template_name = 'study/myAccount.html'
+#     # context_object_name = 'profile_form'
+
+#     def get_queryset(self):
+#         return Student.objects.all()
+
+def MyAccountView(request):
+
+    stud, _ = Student.objects.get_or_create(student_user=request.user)
+
+    return render(request, 'study/myAccount.html', {
+        'first_name': stud.first_name,
+        'last_name': stud.last_name,
+        'computing_id': stud.computing_id,
+        'pref_name': stud.pref_name,
+        'school_year': stud.school_year,
+        'bio': stud.bio,
+    })
+
+
+def uploadProfile(request):
+
+    stud = Student.objects.get(student_user=request.user)
+
+    if request.method == "POST":
+        stud.first_name = request.POST['first_name']
+        stud.last_name = request.POST['last_name']
+        stud.computing_id = request.POST['computing_id']
+        stud.pref_name = request.POST['pref_name']
+        stud.school_year = request.POST['school_year']
+        stud.bio = request.POST['bio']
+        stud.save()
+
+    return HttpResponseRedirect(reverse('study:my-account'))
+
 
 class SessionView(generic.ListView):
     template_name = 'study/sessions.html'
     context_object_name = 'sessions_list'
 
     def get_queryset(self):
-        return Study.objects.all()  
+        return Study.objects.all()
+
 
 class SessionAddView(generic.ListView):
     template_name = 'study/addStudy.html'
@@ -81,17 +125,16 @@ def uploadSession(request):
             'error_message': "One or more required fields were left empty.",
             })
     else:
+
+        person = Student.objects.get(student_user=request.user)
+
         Study.objects.create(
 
-            organizer = request.student, #not sure what to put here
-            date = request.POST['date'], #DateTime should accomodate for most conventional time inputs
-            attendees = request.student, #not sure what to put here
-            location = request.POST['location'], 
-            study_subject = request.POST['subject'],
-            study_number = request.POST['course_number'],
-            study_name = request.POST['study_name'],
-            study_section = request.POST['study_section']
-
+            organizer = person,
+            date = request.POST['date'],
+            attendees = person,
+            location = request.POST['loaction'],
+            #course = 
+            
         )
-
         return HttpResponseRedirect(reverse('study:sessions'))
