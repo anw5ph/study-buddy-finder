@@ -40,7 +40,7 @@ class Course(models.Model):
     number = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(9999)], default=0)
     name = models.CharField(max_length=100, default='')
-    section = models.CharField(max_length=4, default='')
+    # section = models.CharField(max_length=4, default='')
     # Use [Student object].courses.all() to see all of a student's courses
     roster = models.ManyToManyField(
         Student, blank=True, related_name="courses")
