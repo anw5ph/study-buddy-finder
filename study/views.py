@@ -46,38 +46,52 @@ class CourseAddView(generic.ListView):
         if query:
             if query1:
                 if query2:
-                    return Course.objects.filter(subject__icontains=query).filter(number__icontains=query1).filter(name__icontains=query2)
+                    return Course.objects.filter(subject__icontains=query).filter(number__icontains=query1).filter(name__icontains=query2).order_by("number")
                 else:
-                    return Course.objects.filter(subject__icontains=query).filter(number__icontains=query1)
+                    return Course.objects.filter(subject__icontains=query).filter(number__icontains=query1).order_by("number")
             elif query2:
-                return Course.objects.filter(subject__icontains=query).filter(name__icontains=query2)
+                return Course.objects.filter(subject__icontains=query).filter(name__icontains=query2).order_by("number")
             else:
-                return Course.objects.filter(subject__icontains=query)
+                return Course.objects.filter(subject__icontains=query).order_by("number")
         if query1:
             if query2:
-                return Course.objects.filter(number__icontains=query1).filter(name__icontains=query2)
+                return Course.objects.filter(number__icontains=query1).filter(name__icontains=query2).order_by("number")
             else:
-                return Course.objects.filter(number__icontains=query1)
+                return Course.objects.filter(number__icontains=query1).order_by("number")
         if query2:
-            return Course.objects.filter(name__icontains=query2)
+            return Course.objects.filter(name__icontains=query2).order_by("number")
         else:
             return Course.objects.order_by("subject")
 
 def uploadCourse(request):
 
-    if (len(request.POST['subject']) == 0 or len(request.POST['course_number']) == 0 or len(request.POST['course_name']) == 0 or len(request.POST['course_section']) == 0):
-        return render(request, 'study/courseAdd.html', {
-            'error_message': "One or more required fields were left empty.",
-        })
-    elif Course.objects.filter(subject=request.POST['subject'], course_number=request.POST['course_number'], course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user):
-        return render(request, 'study/courseAdd.html', {
-            'error_message': "This course has already been added.",
-        })
-    else:
-        Course.objects.create(subject=request.POST['subject'], course_number=request.POST['course_number'],
-                              course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user)
+    subject = request.POST.get('subject')
+    number = request.POST.get('number')
+    name = request.POST.get('name')
+    roster = request.POST.get('roster')
+
+    course = Course(subject=subject, number=number, name=name)
+    course.save()
+    course.roster.add(roster)
+
+    # course = Course.objects.create(subject=subject, number=number, name=name)
+    # course.add(roster)
 
     return HttpResponseRedirect(reverse('study:courses'))
+
+    # if (len(request.POST['subject']) == 0 or len(request.POST['course_number']) == 0 or len(request.POST['course_name']) == 0 or len(request.POST['course_section']) == 0):
+    #     return render(request, 'study/courseAdd.html', {
+    #         'error_message': "One or more required fields were left empty.",
+    #     })
+    # elif Course.objects.filter(subject=request.POST['subject'], course_number=request.POST['course_number'], course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user):
+    #     return render(request, 'study/courseAdd.html', {
+    #         'error_message': "This course has already been added.",
+    #     })
+    # else:
+    #     Course.objects.create(subject=request.POST['subject'], course_number=request.POST['course_number'],
+    #                           course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user)
+
+    # return HttpResponseRedirect(reverse('study:courses'))
 
 
 # class MyAccountView(generic.ListView):
