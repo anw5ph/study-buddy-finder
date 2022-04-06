@@ -7,6 +7,13 @@
 
 {% block content %}
 {% if user.is_authenticated %}
+
+<form method="GET" action="{% url 'study:search_results' %}" id="searchform">
+  <input class="searchfield" id="searchbox" name="q" type="text" value="{{ request.GET.q }}" placeholder="Search..."/>
+  <input type="submit" value="Submit">
+</form>
+
+<!--
 <br>
 
 <h1><center>Course Upload</center></h1>
@@ -46,10 +53,14 @@
 
       </fieldset>
       <button type="submit" class="btn btn-primary btn-block">Upload</button>
+    -->
       <!-- <input style="background-color: #f64c72; color:white;" type="submit" value="Submit"> -->
+      <!--
     </div>
   </form>
 </div>
+-->
+
 {% else %}
 <a href="{% provider_login_url 'google' %}">Login With Google</a>
 {% endif %}

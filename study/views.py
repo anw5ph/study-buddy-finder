@@ -34,13 +34,20 @@ class CourseView(generic.ListView):
         return Course.objects.all()
 
 
-class CourseAddView(generic.ListView):
+class CourseAddView(generic.TemplateView):
     template_name = 'study/courseAdd.html'
     context_object_name = 'course_add_form'
 
-    def get_queryset(self):
-        return Course.objects.all()
+class SearchCourseView(generic.ListView):
+    template_name = 'study/search_results.html'
+    model = Course
 
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Course.objects.filter(subject__icontains=query)
+        else:
+            return Course.objects.all()
 
 def uploadCourse(request):
 
