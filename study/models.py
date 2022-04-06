@@ -46,7 +46,7 @@ class Course(models.Model):
         Student, blank=True, related_name="courses")
 
     def __str__(self):
-        return f"{self.subject}, {self.number}, {self.name}"
+        return f"{self.subject} {self.number} - {self.name}"
 
 
 class Study(models.Model):
