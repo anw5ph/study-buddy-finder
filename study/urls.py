@@ -26,7 +26,4 @@ urlpatterns = [
 
     path('my-account/update-profile/upload',
          views.uploadProfile, name='upload-profile'),
-
-    path('search/', views.SearchCourseView.as_view(), name="search_results")
-
 ]
