@@ -16,6 +16,10 @@ class StudentAdmin(admin.ModelAdmin):
                     'pref_name', 'school_year', 'bio', 'student_user')
 
 
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ('subject', 'number', 'name')
+
+
 admin.site.register(Student, StudentAdmin)
 admin.site.register(Study)
-admin.site.register(Course)
+admin.site.register(Course, CourseAdmin)

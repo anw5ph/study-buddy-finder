@@ -31,7 +31,11 @@ class CourseView(generic.ListView):
     context_object_name = 'courses_list'
 
     def get_queryset(self):
-        return Course.objects.all()
+        try:
+            student = Student.objects.get(student_user=self.request.user)
+        except Student.DoesNotExist:
+            return None
+        return student.courses.all()
 
 
 class CourseAddView(generic.ListView):
@@ -39,32 +43,51 @@ class CourseAddView(generic.ListView):
     context_object_name = 'course_add_form'
 
     def get_queryset(self):
-        return Course.objects.all()
+        query = self.request.GET.get('q')
+        query1 = self.request.GET.get('q1')
+        query2 = self.request.GET.get('q2')
 
+        if query:
+            if query1:
+                if query2:
+                    return Course.objects.filter(subject__icontains=query).filter(number__icontains=query1).filter(name__icontains=query2).order_by("number")
+                else:
+                    return Course.objects.filter(subject__icontains=query).filter(number__icontains=query1).order_by("number")
+            elif query2:
+                return Course.objects.filter(subject__icontains=query).filter(name__icontains=query2).order_by("number")
+            else:
+                return Course.objects.filter(subject__icontains=query).order_by("number")
+        if query1:
+            if query2:
+                return Course.objects.filter(number__icontains=query1).filter(name__icontains=query2).order_by("number")
+            else:
+                return Course.objects.filter(number__icontains=query1).order_by("number")
+        if query2:
+            return Course.objects.filter(name__icontains=query2).order_by("number")
+        else:
+            return Course.objects.order_by("subject")
 
 def uploadCourse(request):
 
-    if (len(request.POST['subject']) == 0 or len(request.POST['course_number']) == 0 or len(request.POST['course_name']) == 0 or len(request.POST['course_section']) == 0):
-        return render(request, 'study/courseAdd.html', {
-            'error_message': "One or more required fields were left empty.",
-        })
-    elif Course.objects.filter(subject=request.POST['subject'], course_number=request.POST['course_number'], course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user):
-        return render(request, 'study/courseAdd.html', {
-            'error_message': "This course has already been added.",
-        })
-    else:
-        Course.objects.create(subject=request.POST['subject'], course_number=request.POST['course_number'],
-                              course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user)
+    course = Course.objects.get(subject=request.POST['subject'], number=request.POST['number'])
+    course.roster.add(Student.objects.get(student_user=request.user))
 
     return HttpResponseRedirect(reverse('study:courses'))
 
+    # if (len(request.POST['subject']) == 0 or len(request.POST['course_number']) == 0 or len(request.POST['course_name']) == 0 or len(request.POST['course_section']) == 0):
+    #     return render(request, 'study/courseAdd.html', {
+    #         'error_message': "One or more required fields were left empty.",
+    #     })
+    # elif Course.objects.filter(subject=request.POST['subject'], course_number=request.POST['course_number'], course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user):
+    #     return render(request, 'study/courseAdd.html', {
+    #         'error_message': "This course has already been added.",
+    #     })
+    # else:
+    #     Course.objects.create(subject=request.POST['subject'], course_number=request.POST['course_number'],
+    #                           course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user)
 
-# class MyAccountView(generic.ListView):
-#     template_name = 'study/myAccount.html'
-#     # context_object_name = 'profile_form'
+    # return HttpResponseRedirect(reverse('study:courses'))
 
-#     def get_queryset(self):
-#         return Student.objects.all()
 
 def MyAccountView(request):
 
