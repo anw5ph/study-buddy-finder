@@ -112,13 +112,14 @@ class SessionAddView(generic.ListView):
 
 def uploadSession(request):
     if (
-        len(date = request.POST['date']) == 0 or 
-        len(location = request.POST['location']) == 0
+        len(request.POST['date']) == 0 or 
+        len(request.POST['location']) == 0
         #if no course picked
         ):
             return render(request, 'study/addStudy.html', {
             'error_message': "One or more required fields were left empty.",
-            })
+            }
+            )
         
     else:
 
@@ -130,7 +131,7 @@ def uploadSession(request):
             date = request.POST['date'],
             attendees = stud,
             location = request.POST['location'],
-            course = request.POST['course'],
+            course = request.POST['course'], #update after we get courses working
 
 
         )
