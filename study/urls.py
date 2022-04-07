@@ -26,5 +26,4 @@ urlpatterns = [
 
     path('my-account/update-profile/upload',
          views.uploadProfile, name='upload-profile'),
-
 ]
