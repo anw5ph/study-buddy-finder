@@ -12,7 +12,7 @@
 
 <h1><center>Add Course</center></h1>
 
-<form method="GET" action="" id="searchform" style="align-self:center">
+<form method="GET" id="searchform" style="align-self:center">
   {% csrf_token %}
   <div style="display: inline-block;">
     <h4 style="display:inline-block">Filter By:</h4>
@@ -24,13 +24,15 @@
 </form>
 
 <div class="container h-100" style="top:50%; bottom:50%; width:100%;">
-  <div class="row">
-    {% for course in object_list %}
+  {% for course in object_list %}
+    <form class="row" method="POST" action="{% url 'study:upload' %}">
       {% csrf_token %}
-      <button onclick="location.href='{% url 'study:upload' %}'" type="submit" class="btn btn-outline-secondary" >{{ course.subject }} {{ course.number}}-{{course.name}} </button>
+      <input type="hidden" name="subject" value="{{ course.subject }}">
+      <input type="hidden" name="number" value="{{ course.number }}">
+      <button type="submit" class="btn btn-outline-secondary" >{{ course.subject }} {{ course.number}}-{{course.name}} </button>
       <br><br><br>
-    {% endfor %}
-  </div>
+    </form>
+  {% endfor %}
 </div>
 
 {% else %}

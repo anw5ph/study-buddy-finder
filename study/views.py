@@ -31,7 +31,7 @@ class CourseView(generic.ListView):
     context_object_name = 'courses_list'
 
     def get_queryset(self):
-        return Course.objects.all()
+        return Course.objects.filter() # NEEDS TO BE UPDATED STILL
 
 
 class CourseAddView(generic.ListView):
@@ -65,17 +65,8 @@ class CourseAddView(generic.ListView):
 
 def uploadCourse(request):
 
-    subject = request.POST.get('subject')
-    number = request.POST.get('number')
-    name = request.POST.get('name')
-    roster = request.POST.get('roster')
-
-    course = Course(subject=subject, number=number, name=name)
-    course.save()
-    course.roster.add(roster)
-
-    # course = Course.objects.create(subject=subject, number=number, name=name)
-    # course.add(roster)
+    course = Course.objects.get(subject=request.POST['subject'], number=request.POST['number'])
+    course.roster.add(Student.objects.get(student_user=request.user))
 
     return HttpResponseRedirect(reverse('study:courses'))
 
@@ -93,13 +84,6 @@ def uploadCourse(request):
 
     # return HttpResponseRedirect(reverse('study:courses'))
 
-
-# class MyAccountView(generic.ListView):
-#     template_name = 'study/myAccount.html'
-#     # context_object_name = 'profile_form'
-
-#     def get_queryset(self):
-#         return Student.objects.all()
 
 def MyAccountView(request):
 
