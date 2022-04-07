@@ -31,7 +31,11 @@ class CourseView(generic.ListView):
     context_object_name = 'courses_list'
 
     def get_queryset(self):
-        return Course.objects.filter() # NEEDS TO BE UPDATED STILL
+        try:
+            student = Student.objects.get(student_user=self.request.user)
+        except Student.DoesNotExist:
+            return None
+        return student.courses.all()
 
 
 class CourseAddView(generic.ListView):
