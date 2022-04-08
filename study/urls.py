@@ -28,6 +28,14 @@ urlpatterns = [
     
     # Upload study session
     path('session-add/upload', views.uploadSession, name='uploadSession'),
+
+    #Remove study session
+    path('session-remove/', views.SessionRemoveView.as_view(), name='remove-session'),
+
+
+    path('session-remove/delete', views.deleteSession, name='removeSession'),
+
+
     # My Account
     path('my-account', views.MyAccountView, name='my-account'),
 

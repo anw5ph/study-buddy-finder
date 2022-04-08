@@ -168,3 +168,17 @@ def uploadSession(request):
         #does not account for attendees
 
         return HttpResponseRedirect(reverse('study:sessions'))
+
+class SessionRemoveView(generic.ListView):
+    template_name = 'study/removeStudy.html'
+    context_object_name = 'remove_sessions_list'
+    
+    def get_queryset(self):
+        student = Student.objects.get(student_user=self.request.user)
+        sessions = Study.objects.filter(organizer=student)
+        return sessions 
+
+def deleteSession(request):
+    Study.objects.get(id = request.POST['removeSession']).delete()
+
+    return HttpResponseRedirect(reverse('study:sessions'))

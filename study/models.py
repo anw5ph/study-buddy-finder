@@ -53,4 +53,4 @@ class Study(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.study_subject + " " + self.study_number + " " + self.study_name
+        return self.course.subject + " " + self.course.number + " " + self.course.name
