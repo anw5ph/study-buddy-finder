@@ -131,7 +131,29 @@ class SessionAddView(generic.ListView):
     context_object_name = 'session_add_form'
 
     def get_queryset(self):
-        return Course.objects.all()
+        query = self.request.GET.get('q')
+        query1 = self.request.GET.get('q1')
+        query2 = self.request.GET.get('q2')
+
+        if query:
+            if query1:
+                if query2:
+                    return Course.objects.filter(subject__icontains=query).filter(number__icontains=query1).filter(name__icontains=query2).order_by("number")
+                else:
+                    return Course.objects.filter(subject__icontains=query).filter(number__icontains=query1).order_by("number")
+            elif query2:
+                return Course.objects.filter(subject__icontains=query).filter(name__icontains=query2).order_by("number")
+            else:
+                return Course.objects.filter(subject__icontains=query).order_by("number")
+        if query1:
+            if query2:
+                return Course.objects.filter(number__icontains=query1).filter(name__icontains=query2).order_by("number")
+            else:
+                return Course.objects.filter(number__icontains=query1).order_by("number")
+        if query2:
+            return Course.objects.filter(name__icontains=query2).order_by("number")
+        else:
+            return Course.objects.order_by("subject")
 
 def uploadSession(request):
     if (
@@ -154,7 +176,7 @@ def uploadSession(request):
             date = request.POST['date'],
             attendees = stud,
             location = request.POST['location'],
-            course = request.POST['course'], #update after we get courses working
+            course = request.POST['courseSession'], #update after we get courses working
 
 
         )
