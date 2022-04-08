@@ -147,6 +147,7 @@ def uploadSession(request):
             'error_message': "One or more required fields were left empty.",
             }
             )
+            #fails to show classes again if this message pops up
         
     else:
 
@@ -156,11 +157,12 @@ def uploadSession(request):
 
             organizer = stud,
             date = request.POST['date'],
-            attendees = stud,
             location = request.POST['location'],
-            course = request.POST['courseSession'], #update after we get courses working
+            course = Course.objects.get(id = request.POST['courseSession']), #update after we get courses working
 
 
         )
+
+        #does not account for attendees
 
         return HttpResponseRedirect(reverse('study:sessions'))

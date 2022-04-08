@@ -22,7 +22,8 @@
     {% if sessions_list %}
     {% for session in sessions_list %}
     {% if session.organizer == user %}
-    <button type="button" class="btn btn-outline-secondary" >{{ session.study_subject }}</button>
+    <!--<button type="button" class="btn btn-outline-secondary" >{{ session.study_subject }}</button> -->
+    <a>study session does exist!!</a> <!-- test to see if the study session was acknowledged-->
     <br><br><br>
     {% endif %}
     {% endfor %}
