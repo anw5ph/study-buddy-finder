@@ -37,40 +37,20 @@
         <div class="form-floating mb-3">
           <!-- <input class="form-control" type="radio" placeholder="Default Input" name="courseSession" id="courseSession" value="{{ courseSession }}"> -->
           <!-- <label style="color:gray;"for="subject"><i>Course...</i></label> -->
-
-          <form method="GET" id="searchform" style="align-self:center">
-            {% csrf_token %}
-            <div style="display: inline-block;">
-              <h4 style="display:inline-block">Filter By:</h4>
-              <input class="searchfield" id="searchbox" name="q" type="text" value="{{ request.GET.q }}" placeholder="Subject..."/>
-              <input class="searchfield" id="searchbox" name="q1" type="text" value="{{ request.GET.q1 }}" placeholder="Number..."/>
-              <input class="searchfield" id="searchbox" name="q2" type="text" value="{{ request.GET.q2 }}" placeholder="Name..."/>
-              <input type="submit" value="Enter">
-            </div>
-          </form>
-
-          <div class="container h-100" style="top:50%; bottom:50%; width:100%;">
-            {% for course in object_list %}
-              <form class="row" method="POST" action="{% url 'study:upload' %}">
-                {% csrf_token %}
-                <input type="hidden" name="subject" value="{{ course.subject }}">
-                <input type="hidden" name="number" value="{{ course.number }}">
-                <button type="submit" class="btn btn-outline-secondary" >{{ course.subject }} {{ course.number}}-{{course.name}} </button>
-                <br><br><br>
-              </form>
-            {% endfor %}
-          </div>
+          {% if session_add_form %}
+          {% for course in session_add_form %}
+          <button type="button" class="btn btn-outline-secondary" placeholder="Default Input" name="courseSession" id="courseSession" value="{{ courseSession }}">{{ course.subject }} {{ course.number}}-{{course.name}} </button>
+          <br><br><br>
+          {% endfor %}
+          {% else %}
+          <p class="text-center">You have not added any courses yet! Go and add some and then come back here to start a session!</p>
+          {% endif %}
 
         </div>
-        
-   <!-- {% for course in courses_list %}
-            <input type="radio" name="course" id="course{{ forloop.counter }}" value="{{ course.id }}">
-            <label for="course{{ forloop.counter }}">{{ course.subject }} {{ course.number}}-{{course.name}}</label><br>
-        {% endfor %}
 
       </fieldset>
       <button type="submit" class="btn btn-primary btn-block">Upload</button>
-      <input style="background-color: #f64c72; color:white;" type="submit" value="Submit"> -->
+     <!-- <input style="background-color: #f64c72; color:white;" type="submit" value="Submit"> -->
     </div>
   </form>
 </div>
