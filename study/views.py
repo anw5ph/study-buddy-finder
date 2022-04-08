@@ -124,7 +124,9 @@ class SessionView(generic.ListView):
     context_object_name = 'sessions_list'
     
     def get_queryset(self):
-        return Study.objects.all()  
+        student = Student.objects.get(student_user=self.request.user)
+        sessions = Study.objects.filter(organizer=student)
+        return sessions  
 
 class SessionAddView(generic.ListView):
     template_name = 'study/addStudy.html'

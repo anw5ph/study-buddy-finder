@@ -23,7 +23,7 @@
         Date:
         <div class="form-floating mb-3">
           <input class="form-control" type="text" placeholder="Default Input" name="date" id="date" value="{{ date }}">
-          <label style="color:gray;" for="date"><i>(YYYY-MM-DD)</i></label>
+          <label style="color:gray;" for="date"><i>(YYYY-MM-DD HH:MM)</i></label>
         </div>
 
         Location:
@@ -40,10 +40,10 @@
           {% if session_add_form %}
 
           {% for course in session_add_form %}
-          
-          <input type="radio" placeholder="Default Input" name="courseSession" id="course{{ forloop.counter }}" value="{{ course.id }}">
-          <label style="color:gray;" for="courseSession">{{ course.subject }} {{ course.number }}-{{ course.name }}</label><br>
-
+          <div class = "word-wrap">
+            <input type="radio" placeholder="Default Input" name="courseSession" id="course{{ forloop.counter }}" value="{{ course.id }}">
+            <label style="color:gray;" for="courseSession">{{ course.subject }} {{ course.number }}-{{ course.name }}</label><br>
+          </div>
           <!-- <button type="button" class="btn btn-outline-secondary" placeholder="Default Input" name="courseSession" id="courseSession" value="{{ courseSession }}">{{ course.subject }} {{ course.number}}-{{course.name}} </button> -->
           
           <br>
