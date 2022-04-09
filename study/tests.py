@@ -4,6 +4,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from importlib import import_module
+from re import S
 from requests.exceptions import HTTPError
 
 from django.conf import settings
@@ -243,8 +244,8 @@ def create_user():
     return user
 
 
-def create_course(subject, course_number, course_name, course_section, student_course):
-    return Course.objects.create(subject=subject, course_number=course_number, course_name=course_name, course_section=course_section, student_course=student_course)
+def create_course(subject, number, name):
+    return Course.objects.create(subject=subject,number = number, name = name)
 
 
 # class CourseViewTests(TestCase):
@@ -316,51 +317,61 @@ class SessionAddTests(TestCase):
         user = create_user()
         self.client.force_login(user)
         test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
-        test_course = create_course("CS", "3240", "Test Course", "1", user)
-        response = self.client.post(reverse('study:uploadSession'), {'date' : '01/02/2022', 'location' : 'testlocation', 'courseSession' : 'course.id'})
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Date was inputted wrong. Please use the format in the box.")
-        self.assertQuerysetEqual(response.context['session_add_form'], [])
+        test_course = create_course("CS", "3240", "Test Course")
+        test_course.roster.add(test_student)
+
+
+        response = self.client.post(reverse('study:uploadSession'), {'date' : '01/02/2022', 'location' : 'testlocation', 'courseSession' : test_course.id})
+        self.assertEqual(response.status_code, 302)
+        self.assertRaisesMessage(ValueError, "Date was inputted wrong. Please use the format in the box.")
 
 
 
 class SessionViewTests(TestCase):
 
-    def test_no_sessions(self):
+    def test_no_sessions(self): #works
         """
         If no sessions are available a mesasge is displayed
         """
         user = create_user()
         self.client.force_login(user)
         test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
-        test_course = create_course("CS", "3240", "Test Course", "1", user)
+        test_course = create_course("CS", "3240", "Test Course")
+        test_course.roster.add(test_student)
         response = self.client.get(reverse('study:sessions'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "You have not posted or joined any study sessions yet!")
         self.assertQuerysetEqual(response.context['sessions_list'], [])
-
-    def test_one_sessions(self):
+    
+    
+    
+    def test_one_sessions(self): #works
         """
         One course is displayed.
         """
         user = create_user()
         self.client.force_login(user)
         test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
-        test_course = create_course("CS", "3240", "Test Course", "1", user)
-        test_session = create_study_session(test_student, '2022-01-02 12:00', 'testloc', test_course)
+        test_course = create_course("CS", "3240", "Test Course")
+        test_course.roster.add(test_student)
+        session1 = create_study_session(test_student, '2022-04-09', 'testloc', test_course)
         response = self.client.get(reverse('study:sessions'))
-        self.assertQuerysetEqual(response.context['sessions_list'], [test_session])
 
-    def test_two_sessions(self):
-        """
-        One course is displayed.
+        #No need for ordered = False if it is just 1 item
+        self.assertQuerysetEqual(response.context['sessions_list'], [session1])
+
+    def test_two_sessions(self): #works
+        """"
+        Two courses are displayed.
         """
         user = create_user()
         self.client.force_login(user)
         test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
-        test_course = create_course("CS", "3240", "Test Course", "1", user)
-        test_session = create_study_session(test_student, '2022-01-01 12:00', 'testloc', test_course)
-        test_session2 = create_study_session(test_student, '2022-01-02 12:00', 'testloc', test_course)
+        test_course = create_course("CS", "3240", "Test Course")
+        test_course.roster.add(test_student)
+        session1 = create_study_session(test_student, '2022-04-09', 'testloc', test_course)
+        session2 = create_study_session(test_student, '2022-04-10', 'test2loc', test_course)
         response = self.client.get(reverse('study:sessions'))
-        self.assertQuerysetEqual(response.context['sessions_list'], [test_session, test_session2])
 
+        #Queryset is not ordered or a list so ordered = False for this to work
+        self.assertQuerysetEqual(response.context['sessions_list'], [session1, session2], ordered = False) 
