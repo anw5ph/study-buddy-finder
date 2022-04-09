@@ -26,6 +26,13 @@ class CourseAdmin(admin.ModelAdmin):
     readonly_fields = ('subject', 'number', 'name', 'roster')
 
 
+class StudyAdmin(admin.ModelAdmin):
+    list_display = ('date', 'location', 'course', 'organizer')
+    list_filter = ['date']
+    search_fields = ['course']
+    ordering = ['date']
+
+
 admin.site.register(Student, StudentAdmin)
-admin.site.register(Study)
+admin.site.register(Study, StudyAdmin)
 admin.site.register(Course, CourseAdmin)
