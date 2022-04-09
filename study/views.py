@@ -1,9 +1,14 @@
 from re import template
+import datetime
+from django.forms import ValidationError
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
+from django.contrib import messages
+
+
 
 from .models import Student, Study, Course
 # from .forms import LocationForm
@@ -122,6 +127,59 @@ def uploadProfile(request):
 class SessionView(generic.ListView):
     template_name = 'study/sessions.html'
     context_object_name = 'sessions_list'
+    
+    def get_queryset(self):
+        student = Student.objects.get(student_user=self.request.user)
+        sessions = Study.objects.filter(organizer=student)
+        return sessions  
+
+class SessionAddView(generic.ListView):
+    template_name = 'study/addStudy.html'
+    context_object_name = 'session_add_form'
 
     def get_queryset(self):
-        return Study.objects.all()
+        try:
+            student = Student.objects.get(student_user=self.request.user)
+        except Student.DoesNotExist:
+            return None
+        return student.courses.all()
+
+def uploadSession(request):
+    
+    try:
+
+        stud = Student.objects.get(student_user=request.user)
+
+        session = Study.objects.create(
+
+            organizer = stud,
+            date = request.POST['date'],
+            location = request.POST['location'],
+            course = Course.objects.get(id = request.POST['courseSession']), #update after we get courses working
+
+
+        )
+        
+        #Add student to list off attendes for said study object, Organizer is part of attendees but not all attendees are organizers for the study object
+        session.attendees.add(stud) 
+
+        return HttpResponseRedirect(reverse('study:sessions'))
+
+
+    except(ValidationError):
+        messages.error(request, 'Date was inputted wrong. Please use the format in the box.')
+        return HttpResponseRedirect(reverse('study:add-session'))
+
+class SessionRemoveView(generic.ListView):
+    template_name = 'study/removeStudy.html'
+    context_object_name = 'remove_sessions_list'
+    
+    def get_queryset(self):
+        student = Student.objects.get(student_user=self.request.user)
+        sessions = Study.objects.filter(organizer=student)
+        return sessions 
+
+def deleteSession(request):
+    Study.objects.get(id = request.POST['removeSession']).delete()
+
+    return HttpResponseRedirect(reverse('study:sessions'))

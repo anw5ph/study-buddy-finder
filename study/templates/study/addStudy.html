@@ -1,0 +1,75 @@
+{% extends "study/base.html" %}
+{% load socialaccount %}
+
+{% block description %}add study session{% endblock %}
+{% block title %}Add Study Session{% endblock %}
+{% block courses-link-style %}fw-bold{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<br>
+
+<h1><center>Add Study Session</center></h1>
+
+<div class="container h-100">
+  <form class="form-example" action="{% url 'study:uploadSession' %}" method="post">
+    {% csrf_token %}
+
+    <div class="row justify-content-center">
+      <fieldset>
+        {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+        <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+          <center><p style="color:red"><strong>{{message}}</strong></p></center>
+        </div>
+        {% endfor %}
+        </ul>
+        {% endif %}
+
+        <!--{% if error_message %}<center><p style="color:red"><strong>{{error_message}}</strong></p></center>{% endif %}-->
+
+        Date:
+        <div class="form-floating mb-3">
+          <input class="form-control" type="text" placeholder="Default Input" name="date" id="date" value="{{ date }}" required>
+          <label style="color:gray;" for="date"><i>(YYYY-MM-DD HH:mm)</i></label>
+        </div>
+
+        Location:
+        <div class="form-floating mb-3">
+          <input class="form-control" type="text" placeholder="Default Input" name="location" id="location" value="{{ location }}" required>
+          <label style="color:gray;"for="location"><i>Location...</i></label>
+          <a class="btn btn-success" style="position:absolute; margin-right:2px; top:15%; right:0;" href="https://www.library.virginia.edu/services/reserve-rooms/" role="button" >UVA Library</a>
+        </div>
+
+        Course: <!-- try a radio choice? -->
+        <div class="form-floating mb-3">
+          <!-- <input class="form-control" type="radio" placeholder="Default Input" name="courseSession" id="courseSession" value="{{ courseSession }}"> -->
+          <!-- <label style="color:gray;"for="subject"><i>Course...</i></label> -->
+          {% if session_add_form %}
+
+          {% for course in session_add_form %}
+          <div class = "word-wrap">
+            <input type="radio" placeholder="Default Input" name="courseSession" id="course{{ forloop.counter }}" value="{{ course.id }}" required>
+            <label style="color:gray;" for="courseSession">{{ course.subject }} {{ course.number }}-{{ course.name }}</label><br>
+          </div>
+          <!-- <button type="button" class="btn btn-outline-secondary" placeholder="Default Input" name="courseSession" id="courseSession" value="{{ courseSession }}">{{ course.subject }} {{ course.number}}-{{course.name}} </button> -->
+          
+          <br>
+          {% endfor %}
+          {% else %}
+          <p class="text-center">You have not added any courses yet! Go and add some and then come back here to start a session!</p>
+          {% endif %}
+
+        </div>
+
+      </fieldset>
+      <button type="submit" class="btn btn-primary btn-block">Upload</button>
+     <!-- <input style="background-color: #f64c72; color:white;" type="submit" value="Submit"> -->
+    </div>
+  </form>
+</div>
+{% else %}
+<a href="{% provider_login_url 'google' %}">Login With Google</a>
+{% endif %}
+{% endblock %}
