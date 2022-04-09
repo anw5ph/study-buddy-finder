@@ -145,19 +145,12 @@ class SessionAddView(generic.ListView):
         return student.courses.all()
 
 def uploadSession(request):
-    if (
-        ValidationError
-        #if no course picked
-        ):
-        messages.error(request, 'Date was inputted wrong. Please use the format in the box.')
-        return HttpResponseRedirect(reverse('study:add-session'))
-        #fails to show classes again if this message pops up
-        
-    else:
+    
+    try:
 
         stud = Student.objects.get(student_user=request.user)
 
-        Study.objects.create(
+        session = Study.objects.create(
 
             organizer = stud,
             date = request.POST['date'],
@@ -166,10 +159,16 @@ def uploadSession(request):
 
 
         )
-
-        #does not account for attendees
+        
+        #Add student to list off attendes for said study object, Organizer is part of attendees but not all attendees are organizers for the study object
+        session.attendees.add(stud) 
 
         return HttpResponseRedirect(reverse('study:sessions'))
+
+
+    except(ValidationError):
+        messages.error(request, 'Date was inputted wrong. Please use the format in the box.')
+        return HttpResponseRedirect(reverse('study:add-session'))
 
 class SessionRemoveView(generic.ListView):
     template_name = 'study/removeStudy.html'

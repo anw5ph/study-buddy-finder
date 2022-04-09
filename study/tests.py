@@ -25,7 +25,7 @@ from allauth.tests import TestCase as AuthTestCase
 from allauth.socialaccount.providers.google.provider import GoogleProvider
 
 from django.test import TestCase
-from .models import Course
+from .models import Course, Study, Student
 
 
 @override_settings(
@@ -298,3 +298,69 @@ def create_course(subject, course_number, course_name, course_section, student_c
 #         create_course("CS", "3240", "Test Course", "1", user)
 #         response = self.client.post(reverse('study:upload'), {'subject':'CS', 'course_number':'3240', 'course_name':'Test Course', 'course_section':'1', 'student_course':user}, follow=True)
 #         self.assertContains(response, "This course has already been added.")
+
+def create_student(student_user, first_name, last_name, computing_id, pref_name, school_year, bio):
+    return Student.objects.create(student_user = student_user, first_name = first_name, last_name = last_name, computing_id = computing_id, pref_name = pref_name, school_year = school_year, bio = bio)
+
+def create_study_session(organizer, date, location, course):
+    session = Study.objects.create(organizer = organizer, date = date, location = location, course = course)
+    session.attendees.add(organizer)
+    return session
+
+class SessionAddTests(TestCase):
+
+    def test_invalid_date(self):
+        """
+        If date is inputted wrong a message is displayed
+        """
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+        test_course = create_course("CS", "3240", "Test Course", "1", user)
+        response = self.client.post(reverse('study:uploadSession'), {'date' : '01/02/2022', 'location' : 'testlocation', 'courseSession' : 'course.id'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Date was inputted wrong. Please use the format in the box.")
+        self.assertQuerysetEqual(response.context['session_add_form'], [])
+
+
+
+class SessionViewTests(TestCase):
+
+    def test_no_sessions(self):
+        """
+        If no sessions are available a mesasge is displayed
+        """
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+        test_course = create_course("CS", "3240", "Test Course", "1", user)
+        response = self.client.get(reverse('study:sessions'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "You have not posted or joined any study sessions yet!")
+        self.assertQuerysetEqual(response.context['sessions_list'], [])
+
+    def test_one_sessions(self):
+        """
+        One course is displayed.
+        """
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+        test_course = create_course("CS", "3240", "Test Course", "1", user)
+        test_session = create_study_session(test_student, '2022-01-02 12:00', 'testloc', test_course)
+        response = self.client.get(reverse('study:sessions'))
+        self.assertQuerysetEqual(response.context['sessions_list'], [test_session])
+
+    def test_two_sessions(self):
+        """
+        One course is displayed.
+        """
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+        test_course = create_course("CS", "3240", "Test Course", "1", user)
+        test_session = create_study_session(test_student, '2022-01-01 12:00', 'testloc', test_course)
+        test_session2 = create_study_session(test_student, '2022-01-02 12:00', 'testloc', test_course)
+        response = self.client.get(reverse('study:sessions'))
+        self.assertQuerysetEqual(response.context['sessions_list'], [test_session, test_session2])
+
