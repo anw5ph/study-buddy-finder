@@ -17,8 +17,17 @@
 
     <div class="row justify-content-center">
       <fieldset>
+        {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+        <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+          <center><p style="color:red"><strong>{{message}}</strong></p></center>
+        </div>
+        {% endfor %}
+        </ul>
+        {% endif %}
 
-        {% if error_message %}<center><p style="color:red"><strong>One or more of the fields are empty.</strong></p></center>{% endif %}
+        <!--{% if error_message %}<center><p style="color:red"><strong>{{error_message}}</strong></p></center>{% endif %}-->
 
         Date:
         <div class="form-floating mb-3">

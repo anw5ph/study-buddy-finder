@@ -4,6 +4,9 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
+from django.contrib import messages
+
+
 
 from .models import Student, Study, Course
 # from .forms import LocationForm
@@ -142,14 +145,13 @@ class SessionAddView(generic.ListView):
 def uploadSession(request):
     if (
         len(request.POST['date']) == 0 or 
-        len(request.POST['location']) == 0
+        len(request.POST['location']) == 0 or
+        len(request.POST['courseSession']) == 0
         #if no course picked
         ):
-            return render(request, 'study/addStudy.html', {
-            'error_message': "One or more required fields were left empty.",
-            }
-            )
-            #fails to show classes again if this message pops up
+        messages.error(request, 'One or more required fields were left empty')
+        return HttpResponseRedirect(reverse('study:add-session'))
+        #fails to show classes again if this message pops up
         
     else:
 
