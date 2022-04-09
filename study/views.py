@@ -1,4 +1,6 @@
 from re import template
+import datetime
+from django.forms import ValidationError
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -144,12 +146,10 @@ class SessionAddView(generic.ListView):
 
 def uploadSession(request):
     if (
-        len(request.POST['date']) == 0 or 
-        len(request.POST['location']) == 0 or
-        len(request.POST['courseSession']) == 0
+        ValidationError
         #if no course picked
         ):
-        messages.error(request, 'One or more required fields were left empty')
+        messages.error(request, 'Date was inputted wrong. Please use the format in the box.')
         return HttpResponseRedirect(reverse('study:add-session'))
         #fails to show classes again if this message pops up
         

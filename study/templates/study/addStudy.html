@@ -31,13 +31,13 @@
 
         Date:
         <div class="form-floating mb-3">
-          <input class="form-control" type="text" placeholder="Default Input" name="date" id="date" value="{{ date }}">
-          <label style="color:gray;" for="date"><i>(YYYY-MM-DD HH:MM)</i></label>
+          <input class="form-control" type="text" placeholder="Default Input" name="date" id="date" value="{{ date }}" required>
+          <label style="color:gray;" for="date"><i>(YYYY-MM-DD HH:mm)</i></label>
         </div>
 
         Location:
         <div class="form-floating mb-3">
-          <input class="form-control" type="text" placeholder="Default Input" name="location" id="location" value="{{ location }}">
+          <input class="form-control" type="text" placeholder="Default Input" name="location" id="location" value="{{ location }}" required>
           <label style="color:gray;"for="location"><i>Location...</i></label>
           <a class="btn btn-success" style="position:absolute; margin-right:2px; top:15%; right:0;" href="https://www.library.virginia.edu/services/reserve-rooms/" role="button" >UVA Library</a>
         </div>
@@ -50,7 +50,7 @@
 
           {% for course in session_add_form %}
           <div class = "word-wrap">
-            <input type="radio" placeholder="Default Input" name="courseSession" id="course{{ forloop.counter }}" value="{{ course.id }}">
+            <input type="radio" placeholder="Default Input" name="courseSession" id="course{{ forloop.counter }}" value="{{ course.id }}" required>
             <label style="color:gray;" for="courseSession">{{ course.subject }} {{ course.number }}-{{ course.name }}</label><br>
           </div>
           <!-- <button type="button" class="btn btn-outline-secondary" placeholder="Default Input" name="courseSession" id="courseSession" value="{{ courseSession }}">{{ course.subject }} {{ course.number}}-{{course.name}} </button> -->
