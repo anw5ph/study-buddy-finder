@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 from django.contrib import messages
+from requests import session
 
 
 from .models import Student, Study, Course
@@ -59,11 +60,25 @@ def CourseSessionView(request, course_pk):
     course_wanted = get_object_or_404(Course, pk=course_pk)
     try:
         sessions_wanted = (Study.objects.filter(
-            course=course_wanted)).values('date', 'location')
+            course=course_wanted)).values('date', 'location', 'pk', 'organizer', 'attendees', 'course')
     except:
         return messages.error(request, 'There are no upcoming study sessions at this time for the requested course.')
 
+    print(str(sessions_wanted))
     return render(request, 'study/courseSessions.html', {'session_list': sessions_wanted})
+
+
+def SessionMoreView(request, session_pk):
+
+    session_wanted = get_object_or_404(Study, pk=session_pk)
+
+    return render(request, 'study/sessionInfo.html', {
+        'organizer': session_wanted.organizer,
+        'date': session_wanted.date,
+        'attendees': session_wanted.attendees,
+        'location': session_wanted.location,
+        'course': session_wanted.course,
+    })
 
 
 class CourseAddView(generic.ListView):
