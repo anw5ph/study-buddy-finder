@@ -375,3 +375,37 @@ class SessionViewTests(TestCase):
 
         #Queryset is not ordered or a list so ordered = False for this to work
         self.assertQuerysetEqual(response.context['sessions_list'], [session1, session2], ordered = False) 
+
+class SessionRemoveTests(TestCase):
+    def test_no_session_to_remove(self):
+        """
+        if no sessions are available then show a message
+        """
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+        test_course = create_course("CS", "3240", "Test Course")
+        test_course.roster.add(test_student)
+        response = self.client.get(reverse('study:remove-session'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "You have not added any sessions yet! Go and add some and then come back here to remove a session if needed!")
+        self.assertQuerysetEqual(response.context['remove_sessions_list'], [])
+
+    def test_remove_one_session(self):
+        
+        """
+        if a session is available you can remove it
+        """
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+        test_course = create_course("CS", "3240", "Test Course")
+        test_course.roster.add(test_student)
+        session1 = create_study_session(test_student, '2022-04-09', 'testloc', test_course)
+        self.client.post(reverse('study:removeSession'), {'removeSession' : session1.id})
+        response = self.client.get(reverse('study:remove-session'))
+
+        self.assertQuerysetEqual(response.context['remove_sessions_list'], [])
+
+
+
