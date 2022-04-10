@@ -381,3 +381,4 @@ class CourseAddTests(TestCase):
         test_course.roster.add(test_student)
         response = self.client.post(reverse('study:upload'), {'subject':'CS', 'number':'3240', 'name':'Test Course'}, follow=True)
         self.assertContains(response, "This course has already been added.")
+
