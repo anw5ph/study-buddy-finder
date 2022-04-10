@@ -99,12 +99,6 @@ class CourseAddView(generic.ListView):
 def uploadCourse(request):
 
     course = Course.objects.get(subject=request.POST['subject'], number=request.POST['number'])
-
-    if request.user in course.roster.all():
-        return render(request, 'study/courseAdd.html', {
-            'error_message': "This course has already been added.",
-        })
-    
     course.roster.add(Student.objects.get(student_user=request.user))
 
     return HttpResponseRedirect(reverse('study:courses'))
