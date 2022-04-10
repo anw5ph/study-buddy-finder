@@ -119,6 +119,35 @@ def uploadCourse(request):
     # return HttpResponseRedirect(reverse('study:courses'))
 
 
+class CourseRemoveView(generic.ListView):
+    template_name = 'study/removeCourse.html'
+    context_object_name = 'course_remove_list'
+
+    def get_queryset(self):
+        try:
+            student = Student.objects.get(student_user=self.request.user)
+        except Student.DoesNotExist:
+            return None
+        return student.courses.all()
+
+def deleteCourse(request):
+
+    try:
+
+        student = Student.objects.get(student_user=request.user)
+        course = Course.objects.get(id=request.POST['removeCourse'])
+        course.roster.remove(student)
+
+        return HttpResponseRedirect(reverse('study:courses'))
+
+    except:
+
+        messages.error(
+        request, 'Please pick a class to remove or click My Courses to go back.')
+        return HttpResponseRedirect(reverse('study:remove-course'))
+
+
+
 def MyAccountView(request):
 
     stud, _ = Student.objects.get_or_create(student_user=request.user)
@@ -210,6 +239,14 @@ class SessionRemoveView(generic.ListView):
 
 
 def deleteSession(request):
-    Study.objects.get(id=request.POST['removeSession']).delete()
 
-    return HttpResponseRedirect(reverse('study:sessions'))
+    try:
+
+        Study.objects.get(id=request.POST['removeSession']).delete()
+        return HttpResponseRedirect(reverse('study:sessions'))  
+    
+    except:
+
+        messages.error(
+        request, 'Please pick a session to remove or click My Sessions to go back.')
+        return HttpResponseRedirect(reverse('study:remove-session'))
