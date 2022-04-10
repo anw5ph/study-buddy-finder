@@ -1,0 +1,57 @@
+{% extends "study/base.html" %}
+{% load socialaccount %}
+
+{% block description %}courses{% endblock %}
+{% block title %}My Courses{% endblock %}
+{% block courses-link-style %}fw-bold{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<br>
+<h1><center>Remove Course</center></h1>
+<br><br>
+
+<div class="container h-100">
+    <form class="form-example" action="{% url 'study:removeCourse' %}" method="post">
+      {% csrf_token %}
+  
+      <div class="row justify-content-center">
+        <fieldset>
+        {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+        <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+          <center><p style="color:red"><strong>{{message}}</strong></p></center>
+        </div>
+        {% endfor %}
+        </ul>
+        {% endif %}
+
+        
+        Course:
+        <div class="form-floating mb-3">
+          {% if course_remove_list %}
+          {% for course in course_remove_list %}
+          <div class = "word-wrap">
+              <input type="radio" placeholder="Default Input" name="removeCourse" id="course{{ forloop.counter }}" value="{{ course.id }}">
+              <label style="color:gray;" for="removeCourse">{{ course.subject }} {{ course.number}}-{{course.name}}</label><br>
+          </div>
+
+          <br>
+          {% endfor %}
+          {% else %}
+          <p class="text-center">You have not added any courses yet, if you would like to remove a course you should add one first!</p>
+          {% endif %}
+      
+        </div>
+  
+        </fieldset>
+        <button type="submit" class="btn btn-primary btn-block">Remove</button>
+       <!-- <input style="background-color: #f64c72; color:white;" type="submit" value="Submit"> -->
+      </div>
+    </form>
+</div>
+  {% else %}
+  <a href="{% provider_login_url 'google' %}">Login With Google</a>
+  {% endif %}
+  {% endblock %}

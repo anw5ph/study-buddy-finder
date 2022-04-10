@@ -267,6 +267,9 @@ class SessionAddTests(TestCase):
         test_course = create_course("CS", "3240", "Test Course")
         test_course.roster.add(test_student)
 
+        #test_course = Course.objects.get(subject="CS", number=3240)
+        #test_course.roster.add(test_student)
+
 
         response = self.client.post(reverse('study:uploadSession'), {'date' : '01/02/2022', 'location' : 'testlocation', 'courseSession' : test_course.id})
         self.assertEqual(response.status_code, 302)
@@ -284,6 +287,10 @@ class SessionViewTests(TestCase):
         test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
         test_course = create_course("CS", "3240", "Test Course")
         test_course.roster.add(test_student)
+
+        #test_course = Course.objects.get(subject="CS", number=3240)
+        #test_course.roster.add(test_student)
+
         response = self.client.get(reverse('study:sessions'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "You have not posted or joined any study sessions yet!")
@@ -300,6 +307,10 @@ class SessionViewTests(TestCase):
         test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
         test_course = create_course("CS", "3240", "Test Course")
         test_course.roster.add(test_student)
+
+        #test_course = Course.objects.get(subject="CS", number=3240)
+        #test_course.roster.add(test_student)
+
         session1 = create_study_session(test_student, '2022-04-09', 'testloc', test_course)
         response = self.client.get(reverse('study:sessions'))
 
@@ -315,12 +326,56 @@ class SessionViewTests(TestCase):
         test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
         test_course = create_course("CS", "3240", "Test Course")
         test_course.roster.add(test_student)
+
+        #test_course = Course.objects.get(subject="CS", number=3240)
+        #test_course.roster.add(test_student)
+
         session1 = create_study_session(test_student, '2022-04-09', 'testloc', test_course)
         session2 = create_study_session(test_student, '2022-04-10', 'test2loc', test_course)
         response = self.client.get(reverse('study:sessions'))
 
         #Queryset is not ordered or a list so ordered = False for this to work
         self.assertQuerysetEqual(response.context['sessions_list'], [session1, session2], ordered = False)
+
+class SessionRemoveTests(TestCase):
+    def test_no_session_to_remove(self):
+        """
+        if no sessions are available then show a message
+        """
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+        test_course = create_course("CS", "3240", "Test Course")
+        test_course.roster.add(test_student)
+
+        #test_course = Course.objects.get(subject="CS", number=3240)
+        #test_course.roster.add(test_student)
+
+        response = self.client.get(reverse('study:remove-session'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "You have not added any sessions yet! Go and add some and then come back here to remove a session if needed!")
+        self.assertQuerysetEqual(response.context['remove_sessions_list'], [])
+
+    def test_remove_one_session(self):
+
+        """
+        if a session is available you can remove it
+        """
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+        test_course = create_course("CS", "3240", "Test Course")
+        test_course.roster.add(test_student)
+
+        #test_course = Course.objects.get(subject="CS", number=3240)
+        #test_course.roster.add(test_student)
+
+        session1 = create_study_session(test_student, '2022-04-09', 'testloc', test_course)
+        self.client.post(reverse('study:removeSession'), {'removeSession' : session1.id})
+        response = self.client.get(reverse('study:remove-session'))
+
+        self.assertQuerysetEqual(response.context['remove_sessions_list'], [])
+        
 
 class CourseViewTests(TestCase):
 
