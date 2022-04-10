@@ -362,23 +362,17 @@ class CourseViewTests(TestCase):
         response = self.client.get(reverse('study:courses'))
         self.assertQuerysetEqual(response.context['courses_list'], [course, course2], ordered=False)
 
-class CourseAddTests(TestCase):
-    """
-    Tests form validation
-    """
-    def test_invalid_course(self):
-        user = create_user()
-        self.client.force_login(user)
-        test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
-        response = self.client.post(reverse('study:upload'), {'subject':'', 'number':'', 'name':''}, follow=True)
-        self.assertContains(response, "One or more required fields were left empty.", html=True)
+# class CourseAddTests(TestCase):
+#     """
+#     Tests form validation
+#     """
 
-    def test_duplicate_course(self):
-        user = create_user()
-        self.client.force_login(user)
-        test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
-        test_course = create_course("CS", "3240", "Test Course")
-        test_course.roster.add(test_student)
-        response = self.client.post(reverse('study:upload'), {'subject':'CS', 'number':'3240', 'name':'Test Course'}, follow=True)
-        self.assertContains(response, "This course has already been added.")
+#     def test_duplicate_course(self):
+#         user = create_user()
+#         self.client.force_login(user)
+#         test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+#         test_course = create_course("CS", "3240", "Test Course")
+#         test_course.roster.add(test_student)
+#         response = self.client.post(reverse('study:upload'), {'subject':'CS', 'number':'3240', 'name':'Test Course'}, follow=True)
+#         self.assertContains(response, "This course has already been added.")
 

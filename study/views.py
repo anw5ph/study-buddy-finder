@@ -98,11 +98,6 @@ class CourseAddView(generic.ListView):
 
 def uploadCourse(request):
 
-    if (len(request.POST['subject']) == 0 or len(request.POST['number']) == 0):
-        return render(request, 'study/courseAdd.html', {
-            'error_message': "One or more required fields were left empty.",
-        })
-
     course = Course.objects.get(subject=request.POST['subject'], number=request.POST['number'])
 
     if request.user in course.roster.all():
