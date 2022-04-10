@@ -17,6 +17,17 @@
   
       <div class="row justify-content-center">
         <fieldset>
+
+          {% if messages %}
+          <ul class="messages">
+          {% for message in messages %}
+          <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+          <center><p style="color:red"><strong>{{message}}</strong></p></center>
+          </div>
+          {% endfor %}
+          </ul>
+          {% endif %}
+
           Session: 
           <div class="form-floating mb-3">
             {% if remove_sessions_list %}
