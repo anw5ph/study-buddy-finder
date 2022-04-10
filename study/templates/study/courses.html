@@ -21,7 +21,7 @@
   <div class="row">
     {% if courses_list %}
     {% for course in courses_list %}
-    <button type="button" class="btn btn-outline-secondary" >{{ course.subject }} {{ course.number}}-{{course.name}} </button>
+    <a type="button" style="text-align: center;" class="btn btn-outline-secondary" href="{% url 'study:course-session' course.pk %}" >{{ course.subject }} {{ course.number}}-{{course.name}} </a>
     <br><br><br>
     {% endfor %}
     {% else %}
