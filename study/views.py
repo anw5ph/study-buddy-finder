@@ -113,25 +113,42 @@ class CourseAddView(generic.ListView):
 
 def uploadCourse(request):
 
-    course = Course.objects.get(
-        subject=request.POST['subject'], number=request.POST['number'])
-    course.roster.add(Student.objects.get(student_user=request.user))
-
+    student = Student.objects.get(student_user=request.user)
+    course = Course.objects.get(subject=request.POST['subject'], number=request.POST['number'])
+    if course not in student.courses.all():
+        course.roster.add(student)
+    else:
+        messages.error(request, 'Already added this course.')
     return HttpResponseRedirect(reverse('study:courses'))
 
-    # if (len(request.POST['subject']) == 0 or len(request.POST['course_number']) == 0 or len(request.POST['course_name']) == 0 or len(request.POST['course_section']) == 0):
-    #     return render(request, 'study/courseAdd.html', {
-    #         'error_message': "One or more required fields were left empty.",
-    #     })
-    # elif Course.objects.filter(subject=request.POST['subject'], course_number=request.POST['course_number'], course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user):
-    #     return render(request, 'study/courseAdd.html', {
-    #         'error_message': "This course has already been added.",
-    #     })
-    # else:
-    #     Course.objects.create(subject=request.POST['subject'], course_number=request.POST['course_number'],
-    #                           course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user)
 
-    # return HttpResponseRedirect(reverse('study:courses'))
+class CourseRemoveView(generic.ListView):
+    template_name = 'study/removeCourse.html'
+    context_object_name = 'course_remove_list'
+
+    def get_queryset(self):
+        try:
+            student = Student.objects.get(student_user=self.request.user)
+        except Student.DoesNotExist:
+            return None
+        return student.courses.all()
+
+def deleteCourse(request):
+
+    try:
+
+        student = Student.objects.get(student_user=request.user)
+        course = Course.objects.get(id=request.POST['removeCourse'])
+        course.roster.remove(student)
+
+        return HttpResponseRedirect(reverse('study:courses'))
+
+    except:
+
+        messages.error(
+        request, 'Please pick a class to remove or click My Courses to go back.')
+        return HttpResponseRedirect(reverse('study:remove-course'))
+
 
 
 def MyAccountView(request):
@@ -225,6 +242,14 @@ class SessionRemoveView(generic.ListView):
 
 
 def deleteSession(request):
-    Study.objects.get(id=request.POST['removeSession']).delete()
 
-    return HttpResponseRedirect(reverse('study:sessions'))
+    try:
+
+        Study.objects.get(id=request.POST['removeSession']).delete()
+        return HttpResponseRedirect(reverse('study:sessions'))  
+    
+    except:
+
+        messages.error(
+        request, 'Please pick a session to remove or click My Sessions to go back.')
+        return HttpResponseRedirect(reverse('study:remove-session'))
