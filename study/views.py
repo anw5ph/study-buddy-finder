@@ -98,24 +98,13 @@ class CourseAddView(generic.ListView):
 
 def uploadCourse(request):
 
+    student = Student.objects.get(student_user=request.user)
     course = Course.objects.get(subject=request.POST['subject'], number=request.POST['number'])
-    course.roster.add(Student.objects.get(student_user=request.user))
-
+    if course not in student.courses.all():
+        course.roster.add(student)
+    else:
+        messages.error(request, 'Already added this course.')
     return HttpResponseRedirect(reverse('study:courses'))
-
-    # if (len(request.POST['subject']) == 0 or len(request.POST['course_number']) == 0 or len(request.POST['course_name']) == 0 or len(request.POST['course_section']) == 0):
-    #     return render(request, 'study/courseAdd.html', {
-    #         'error_message': "One or more required fields were left empty.",
-    #     })
-    # elif Course.objects.filter(subject=request.POST['subject'], course_number=request.POST['course_number'], course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user):
-    #     return render(request, 'study/courseAdd.html', {
-    #         'error_message': "This course has already been added.",
-    #     })
-    # else:
-    #     Course.objects.create(subject=request.POST['subject'], course_number=request.POST['course_number'],
-    #                           course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user)
-
-    # return HttpResponseRedirect(reverse('study:courses'))
 
 
 def MyAccountView(request):
