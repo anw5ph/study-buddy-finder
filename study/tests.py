@@ -247,60 +247,7 @@ def create_user():
 def create_course(subject, number, name):
     return Course.objects.create(subject=subject,number = number, name = name)
 
-
-# class CourseViewTests(TestCase):
-
-#     def test_no_courses(self):
-#         """
-#         If no courses have been added, an appropriate message is displayed.
-#         """
-#         user = create_user()
-#         self.client.force_login(user)
-#         response = self.client.get(reverse('study:courses'))
-#         self.assertEqual(response.status_code, 200)
-#         self.assertContains(response, "You have not added any courses yet!")
-#         self.assertQuerysetEqual(response.context['courses_list'], [])
-
-#     def test_one_course(self):
-#         """
-#         One course is displayed.
-#         """
-#         user = create_user()
-#         self.client.force_login(user)
-#         course = create_course("CS", "3240", "Test Course", "1", user)
-#         response = self.client.get(reverse('study:courses'))
-#         self.assertQuerysetEqual(response.context['courses_list'], [course])
-
-#     def test_multiple_courses(self):
-#         """
-#         Both courses are displayed.
-#         """
-#         user = create_user()
-#         self.client.force_login(user)
-#         course = create_course("CS", "3240", "Test Course", "1", user)
-#         course2 = create_course("FREN", "1010", "français", "2", user)
-#         response = self.client.get(reverse('study:courses'))
-#         self.assertQuerysetEqual(response.context['courses_list'], [course, course2], ordered=False)
-
-
-# class CourseAddTests(TestCase):
-#     """
-#     Tests form validation
-#     """
-#     def test_invalid_course(self):
-#         user = create_user()
-#         self.client.force_login(user)
-#         response = self.client.post(reverse('study:upload'), {'subject':'', 'course_number':'', 'course_name':'', 'course_section':'', 'student_course':user}, follow=True)
-#         self.assertContains(response, "One or more required fields were left empty.", html=True)
-
-#     def test_duplicate_course(self):
-#         user = create_user()
-#         self.client.force_login(user)
-#         create_course("CS", "3240", "Test Course", "1", user)
-#         response = self.client.post(reverse('study:upload'), {'subject':'CS', 'course_number':'3240', 'course_name':'Test Course', 'course_section':'1', 'student_course':user}, follow=True)
-#         self.assertContains(response, "This course has already been added.")
-
-def create_student(student_user, first_name, last_name, computing_id, pref_name, school_year, bio):
+def create_student(student_user, first_name='testfirstname', last_name='testlastname', computing_id='testcid', pref_name='testpref', school_year=1, bio='test bio'):
     return Student.objects.create(student_user = student_user, first_name = first_name, last_name = last_name, computing_id = computing_id, pref_name = pref_name, school_year = school_year, bio = bio)
 
 def create_study_session(organizer, date, location, course):
@@ -329,7 +276,6 @@ class SessionAddTests(TestCase):
         self.assertRaisesMessage(ValueError, "Date was inputted wrong. Please use the format in the box.")
 
 
-
 class SessionViewTests(TestCase):
 
     def test_no_sessions(self): #works
@@ -349,9 +295,9 @@ class SessionViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "You have not posted or joined any study sessions yet!")
         self.assertQuerysetEqual(response.context['sessions_list'], [])
-    
-    
-    
+
+
+
     def test_one_sessions(self): #works
         """
         One course is displayed.
@@ -389,7 +335,7 @@ class SessionViewTests(TestCase):
         response = self.client.get(reverse('study:sessions'))
 
         #Queryset is not ordered or a list so ordered = False for this to work
-        self.assertQuerysetEqual(response.context['sessions_list'], [session1, session2], ordered = False) 
+        self.assertQuerysetEqual(response.context['sessions_list'], [session1, session2], ordered = False)
 
 class SessionRemoveTests(TestCase):
     def test_no_session_to_remove(self):
@@ -429,6 +375,72 @@ class SessionRemoveTests(TestCase):
         response = self.client.get(reverse('study:remove-session'))
 
         self.assertQuerysetEqual(response.context['remove_sessions_list'], [])
+        
 
+class CourseViewTests(TestCase):
 
+    def test_no_courses(self):
+        """
+        If no courses have been added, an appropriate message is displayed.
+        """
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+        response = self.client.get(reverse('study:courses'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "You have not added any courses yet!")
+        self.assertQuerysetEqual(response.context['courses_list'], [])
 
+    def test_one_course(self):
+        """
+        One course is displayed.
+        """
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+        test_course = create_course("CS", "3240", "Test Course")
+        test_course.roster.add(test_student)
+        response = self.client.get(reverse('study:courses'))
+        self.assertQuerysetEqual(response.context['courses_list'], [test_course])
+
+    def test_multiple_courses(self):
+        """
+        Both courses are displayed.
+        """
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+        course = create_course("CS", "3240", "Test Course")
+        course.roster.add(test_student)
+        course2 = create_course("FREN", "1010", "Test Course 2")
+        course2.roster.add(test_student)
+        response = self.client.get(reverse('study:courses'))
+        self.assertQuerysetEqual(response.context['courses_list'], [course, course2], ordered=False)
+
+class CourseAddTests(TestCase):
+    def test_add_course(self):
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user)
+        test_course = create_course("CS", 3240, "Test Course")
+        response = self.client.post(reverse('study:upload'), {'subject':'CS', 'number':3240}, follow=True)
+        self.assertQuerysetEqual(response.context['courses_list'], [test_course])
+
+    def test_random_course_not_displayed(self):
+        # This test is sort of redundant, but proves to me that the other tests are truly working as intended
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user)
+        test_course = create_course("CS", 3240, "Test Course")
+        random_course = create_course("CS", 9999, "How to Become Mark Zuckerberg")
+        response = self.client.post(reverse('study:upload'), {'subject':'CS', 'number':3240}, follow=True)
+        self.assertQuerysetEqual(response.context['courses_list'], [test_course])
+
+    def test_duplicate_course(self):
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user)
+        test_course = create_course("CS", 3240, "Test Course")
+        test_course.roster.add(test_student)
+        response = self.client.post(reverse('study:upload'), {'subject':'CS', 'number':3240}, follow=True)
+        self.assertContains(response, "Already added this course.")

@@ -20,6 +20,15 @@
 
 <div class="container h-100" style="top:50%; bottom:50%; width:100%;">
   <div class="row">
+    {% if messages %}
+    <ul class="messages">
+    {% for message in messages %}
+    <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+      <center><p style="color:red"><strong>{{message}}</strong></p></center>
+    </div>
+    {% endfor %}
+    </ul>
+    {% endif %}
     {% if courses_list %}
     {% for course in courses_list %}
     <a type="button" style="text-align: center;" class="btn btn-outline-secondary" href="{% url 'study:course-session' course.pk %}" >{{ course.subject }} {{ course.number}}-{{course.name}} </a>
