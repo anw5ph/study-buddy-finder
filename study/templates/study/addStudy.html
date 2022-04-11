@@ -35,6 +35,23 @@
           <label style="color:gray;" for="date"><i>Input Date and Time:</i></label>
         </div>
 
+        <script>
+          var today = new Date();
+          var dd = today.getDate();
+          var mm = today.getMonth()+1;
+          var yyyy = today.getFullYear();
+
+          if(dd<10){
+            dd='0'+dd
+          } 
+          if(mm<10){
+            mm='0'+mm
+          } 
+
+          today = yyyy+'-'+mm+'-'+dd+"T00:00";
+          document.getElementById("date").setAttribute("min", today);
+        </script> 
+
         Location:
         <div class="form-floating mb-3">
           <input class="form-control" type="text" placeholder="Default Input" name="location" id="location" value="{{ location }}" required>
