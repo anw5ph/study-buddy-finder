@@ -11,7 +11,12 @@
 <h1><center>My Courses</center></h1>
 <div>
   <a class="btn btn-success" style="position:absolute; margin-right:2px; top:15%; right:0;" href="{% url 'study:course-add' %}" role="button" >Add Course</a>
+<<<<<<< HEAD
   <a color= "#ff3131" class="btn btn-success" style="position:absolute; margin-left:2px; top:15%; left:0;" href="{% url 'study:remove-session' %}" role="button" >Remove Course</a>
+=======
+  <a color= "#ff3131" class="btn btn-success" style="position:absolute; margin-left:2px; top:15%; left:0;" href="{% url 'study:remove-course' %}" role="button" >Remove Course</a>
+
+>>>>>>> d22bd2ef79a29abd0728f1e249325a52fef47fb8
 
 </div>
 <br><br>
@@ -19,6 +24,15 @@
 
 <div class="container h-100" style="top:50%; bottom:50%; width:100%;">
   <div class="row">
+    {% if messages %}
+    <ul class="messages">
+    {% for message in messages %}
+    <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+      <center><p style="color:red"><strong>{{message}}</strong></p></center>
+    </div>
+    {% endfor %}
+    </ul>
+    {% endif %}
     {% if courses_list %}
     {% for course in courses_list %}
     <a type="button" style="text-align: center;" class="btn btn-outline-secondary" href="{% url 'study:course-session' course.pk %}" >{{ course.subject }} {{ course.number}}-{{course.name}} </a>

@@ -21,7 +21,7 @@
     <div class="row">
       {% if session_list %}
       {% for session in session_list %}
-      <button type="button" class="btn btn-outline-secondary" > <b>Date:</b> {{ session.date }} <br>  <b>Location:</b> {{ session.location }} </button>
+      <a type="button" class="btn btn-outline-secondary" href="{% url 'study:info' session.pk %}"> <b>Date:</b> {{ session.date }} <br> <b>Location:</b> {{ session.location }}  </a>
       <br><br><br>
       {% endfor %}
       {% else %}

@@ -1,0 +1,79 @@
+{% extends "study/base.html" %}
+{% load socialaccount %}
+
+{% block description %}sessions{% endblock %}
+{% block title %}My Sessions{% endblock %}
+{% block courses-link-style %}fw-bold{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<br>
+<h1><center>{{ course.subject }} {{ course.number}} Study Session</center></h1>
+
+<div>
+    <a class="btn btn-success" style="position:absolute; margin-right:2px; top:15%; right:0;" href="{% url 'study:courses' %}" role="button" >Back to My Courses</a>
+  
+<hr>
+  
+</div>
+<br><br>
+
+<div class="container h-100">
+
+    <form class="form-example" method="post">
+        {% csrf_token %}
+      
+        <div class="row">
+          <fieldset>
+      
+            <div class="form-group row">
+                <label for="date", class="col-sm-2 col-form-label">Date</label>
+                <div class="col-sm-10">
+                  <input type="text" readonly class="form-control-plaintext" name="date" id="date" value="{{ date }}">
+                </div>   
+            </div>
+            <br>
+  
+            <div class="form-group row">
+                <label for="location", class="col-sm-2 col-form-label">Location</label>
+                <div class="col-sm-10">
+                  <input type="text" readonly class="form-control-plaintext" name="location" id="location" value="{{ location }}">
+                </div>   
+            </div>
+            <br>
+  
+            <div class="form-group row">
+                <label for="organizer", class="col-sm-2 col-form-label">Organizer</label>
+                <div class="col-sm-10">
+                  <input type="text" readonly class="form-control-plaintext" name="organizer" id="organizer" value="{{ organizer.computing_id }}">
+                </div>   
+            </div>
+            <br>
+
+            <div class="form-group row">
+                <label for="attendees", class="col-sm-2 col-form-label">Attendee(s)</label>
+                <div class="col-sm-10">
+                  <input type="text" readonly class="form-control-plaintext" name="attendees" id="attendees" value="{{ attendees.all.count }}">
+                </div>   
+              </div>
+              <br>
+  
+          </fieldset>
+          
+        </div>
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <button type="submit" class="btn btn-primary btn-block">Attend</button>
+            </div>
+          </div>
+        </div>
+      </form>
+</div>
+
+
+  
+  {% else %}
+  <a href="{% provider_login_url 'google' %}">Login With Google</a>
+  {% endif %}
+  {% endblock %}
