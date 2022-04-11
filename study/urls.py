@@ -19,6 +19,9 @@ urlpatterns = [
     # Upload course
     path('course-add/upload', views.uploadCourse, name='upload'),
 
+     # Remove a course
+    path('course-add/remove', views.CourseRemoveView.as_view(), name='remove-course'),
+
     # See sessions for a course
     path('<int:course_pk>/sessions/',
          views.CourseSessionView, name='course-session'),

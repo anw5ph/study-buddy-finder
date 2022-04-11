@@ -213,3 +213,19 @@ def deleteSession(request):
     Study.objects.get(id=request.POST['removeSession']).delete()
 
     return HttpResponseRedirect(reverse('study:sessions'))
+
+
+class CourseRemoveView(generic.ListView):
+    template_name = 'study/removeCourse.html'
+    context_object_name = 'remove_courses_list'
+
+    def get_queryset(self):
+        student = Student.objects.get(student_user=self.request.user)
+        sessions = Study.objects.filter(organizer=student)
+        return sessions
+
+
+def deleteSession(request):
+    Study.objects.get(id=request.POST['removeSession']).delete()
+
+    return HttpResponseRedirect(reverse('study:sessions'))
