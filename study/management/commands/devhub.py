@@ -33,10 +33,10 @@ class Command(BaseCommand):
                 subject = course[0]
                 number = course[1]
                 name = course[4]
-                section = re.sub('[\W_]+', '', course[2]).lstrip('0')
-                if term == options['term'] and (subject, number, name, section) not in courses:
-                    courses.add((subject, number, name, section))
+                # section = re.sub('[\W_]+', '', course[2]).lstrip('0')
+                if term == options['term'] and (subject, number, name) not in courses:
+                    courses.add((subject, number, name))
             for course in courses:
-                Course.objects.create(subject=course[0], number=course[1], name=course[2], section=course[3])
+                Course.objects.create(subject=course[0], number=course[1], name=course[2])
 
         self.stdout.write(self.style.SUCCESS('Successfully imported courses'))

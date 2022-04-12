@@ -10,8 +10,8 @@
 <br>
 <h1><center>My Sessions</center></h1>
 <div>
-  <a class="btn btn-success" style="position:absolute; margin-right:2px; top:15%; right:0;" href="{% url 'study:session-add' %}" role="button" >Add Session</a>
-
+  <a class="btn btn-success" style="position:absolute; margin-right:2px; top:15%; right:0;" href="{% url 'study:add-session' %}" role="button" >Add Session</a>
+  <a color= "#ff3131" class="btn btn-success" style="position:absolute; margin-left:2px; top:15%; left:0;" href="{% url 'study:remove-session' %}" role="button" >Remove Session</a>
 </div>
 <br><br>
 
@@ -20,10 +20,8 @@
   <div class="row">
     {% if sessions_list %}
     {% for session in sessions_list %}
-    {% if session.organizer == user %}
-    <button type="button" class="btn btn-outline-secondary" >{{ session.study_subject }}</button>
+    <a type="button" class="btn btn-outline-secondary" href="{% url 'study:info' session.pk %}" >{{ session.date }}: {{ session.course.subject }} {{ session.course.number}}-{{session.course.name}}</a>
     <br><br><br>
-    {% endif %}
     {% endfor %}
     {% else %}
     <p class="text-center">You have not posted or joined any study sessions yet!</p>

@@ -1,9 +1,14 @@
 from re import template
+import datetime
+from django.forms import ValidationError
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
+from django.contrib import messages
+from requests import session
+
 
 from .models import Student, Study, Course
 # from .forms import LocationForm
@@ -31,7 +36,49 @@ class CourseView(generic.ListView):
     context_object_name = 'courses_list'
 
     def get_queryset(self):
-        return Course.objects.all()
+        try:
+            student = Student.objects.get(student_user=self.request.user)
+        except Student.DoesNotExist:
+            return None
+        return student.courses.all()
+
+
+# class CourseSessionView(generic.ListView):
+#     template_name = 'study/courseSessions.html'
+#     context_object_name = 'sessions_list'
+
+#     def get_queryset(self):
+#         # try:
+#         #     sessions = Study.objects.get()
+#         # except Study.DoesNotExist:
+#         #     return None
+#         return Study.objects.all()
+
+def CourseSessionView(request, course_pk):
+
+    # course_wanted = Course.objects.get(id=course_pk)
+    course_wanted = get_object_or_404(Course, pk=course_pk)
+    try:
+        sessions_wanted = (Study.objects.filter(
+            course=course_wanted)).values('date', 'location', 'pk', 'organizer', 'attendees', 'course')
+    except:
+        return messages.error(request, 'There are no upcoming study sessions at this time for the requested course.')
+
+    print(str(sessions_wanted))
+    return render(request, 'study/courseSessions.html', {'session_list': sessions_wanted})
+
+
+def SessionMoreView(request, session_pk):
+
+    session_wanted = get_object_or_404(Study, pk=session_pk)
+
+    return render(request, 'study/sessionInfo.html', {
+        'organizer': session_wanted.organizer,
+        'date': session_wanted.date,
+        'attendees': session_wanted.attendees,
+        'location': session_wanted.location,
+        'course': session_wanted.course,
+    })
 
 
 class CourseAddView(generic.ListView):
@@ -39,32 +86,70 @@ class CourseAddView(generic.ListView):
     context_object_name = 'course_add_form'
 
     def get_queryset(self):
-        return Course.objects.all()
+        query = self.request.GET.get('q')
+        query1 = self.request.GET.get('q1')
+        query2 = self.request.GET.get('q2')
+
+        if query:
+            if query1:
+                if query2:
+                    return Course.objects.filter(subject__icontains=query).filter(number__icontains=query1).filter(name__icontains=query2).order_by("number")
+                else:
+                    return Course.objects.filter(subject__icontains=query).filter(number__icontains=query1).order_by("number")
+            elif query2:
+                return Course.objects.filter(subject__icontains=query).filter(name__icontains=query2).order_by("number")
+            else:
+                return Course.objects.filter(subject__icontains=query).order_by("number")
+        if query1:
+            if query2:
+                return Course.objects.filter(number__icontains=query1).filter(name__icontains=query2).order_by("number")
+            else:
+                return Course.objects.filter(number__icontains=query1).order_by("number")
+        if query2:
+            return Course.objects.filter(name__icontains=query2).order_by("number")
+        else:
+            return Course.objects.order_by("subject")
 
 
 def uploadCourse(request):
 
-    if (len(request.POST['subject']) == 0 or len(request.POST['course_number']) == 0 or len(request.POST['course_name']) == 0 or len(request.POST['course_section']) == 0):
-        return render(request, 'study/courseAdd.html', {
-            'error_message': "One or more required fields were left empty.",
-        })
-    elif Course.objects.filter(subject=request.POST['subject'], course_number=request.POST['course_number'], course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user):
-        return render(request, 'study/courseAdd.html', {
-            'error_message': "This course has already been added.",
-        })
+    student = Student.objects.get(student_user=request.user)
+    course = Course.objects.get(subject=request.POST['subject'], number=request.POST['number'])
+    if course not in student.courses.all():
+        course.roster.add(student)
     else:
-        Course.objects.create(subject=request.POST['subject'], course_number=request.POST['course_number'],
-                              course_name=request.POST['course_name'], course_section=request.POST['course_section'], student_course=request.user)
-
+        messages.error(request, 'Already added this course.')
     return HttpResponseRedirect(reverse('study:courses'))
 
 
-# class MyAccountView(generic.ListView):
-#     template_name = 'study/myAccount.html'
-#     # context_object_name = 'profile_form'
+class CourseRemoveView(generic.ListView):
+    template_name = 'study/removeCourse.html'
+    context_object_name = 'course_remove_list'
 
-#     def get_queryset(self):
-#         return Student.objects.all()
+    def get_queryset(self):
+        try:
+            student = Student.objects.get(student_user=self.request.user)
+        except Student.DoesNotExist:
+            return None
+        return student.courses.all()
+
+def deleteCourse(request):
+
+    try:
+
+        student = Student.objects.get(student_user=request.user)
+        course = Course.objects.get(id=request.POST['removeCourse'])
+        course.roster.remove(student)
+
+        return HttpResponseRedirect(reverse('study:courses'))
+
+    except:
+
+        messages.error(
+        request, 'Please pick a class to remove or click My Courses to go back.')
+        return HttpResponseRedirect(reverse('study:remove-course'))
+
+
 
 def MyAccountView(request):
 
@@ -101,7 +186,9 @@ class SessionView(generic.ListView):
     context_object_name = 'sessions_list'
 
     def get_queryset(self):
-        return Study.objects.all()
+        student = Student.objects.get(student_user=self.request.user)
+        sessions = Study.objects.filter(organizer=student)
+        return sessions
 
 
 class SessionAddView(generic.ListView):
@@ -109,32 +196,60 @@ class SessionAddView(generic.ListView):
     context_object_name = 'session_add_form'
 
     def get_queryset(self):
-        return Course.objects.all()
+        try:
+            student = Student.objects.get(student_user=self.request.user)
+        except Student.DoesNotExist:
+            return None
+        return student.courses.all()
+
 
 def uploadSession(request):
-    if ():
-        if (
-            len(date = request.POST['date']) == 0 or 
-            len(location = request.POST['location']) == 0 or 
-            len(study_subject = request.POST['subject']) == 0 or 
-            len(study_number = request.POST['course_number']) == 0 or 
-            len(study_name = request.POST['study_name']) == 0 or 
-            len(study_section = request.POST['study_section']) == 0
-        ):
-            return render(request, 'study/addStudy.html', {
-            'error_message': "One or more required fields were left empty.",
-            })
-    else:
 
-        person = Student.objects.get(student_user=request.user)
+    try:
 
-        Study.objects.create(
+        stud = Student.objects.get(student_user=request.user)
 
-            organizer = person,
-            date = request.POST['date'],
-            attendees = person,
-            location = request.POST['loaction'],
-            #course = 
-            
+        session = Study.objects.create(
+
+            organizer=stud,
+            date=request.POST['date'],
+            location=request.POST['location'],
+            # update after we get courses working
+            course=Course.objects.get(id=request.POST['courseSession']),
+
+
         )
+
+        # Add student to list off attendes for said study object, Organizer is part of attendees but not all attendees are organizers for the study object
+        session.attendees.add(stud)
+
         return HttpResponseRedirect(reverse('study:sessions'))
+
+    except(ValidationError):
+        messages.error(
+            request, 'Date was inputted wrong. Please use the format in the box.')
+        return HttpResponseRedirect(reverse('study:add-session'))
+
+
+class SessionRemoveView(generic.ListView):
+    template_name = 'study/removeStudy.html'
+    context_object_name = 'remove_sessions_list'
+
+    def get_queryset(self):
+        student = Student.objects.get(student_user=self.request.user)
+        sessions = Study.objects.filter(organizer=student)
+        return sessions
+
+
+def deleteSession(request):
+
+    try:
+
+        Study.objects.get(id=request.POST['removeSession']).delete()
+        return HttpResponseRedirect(reverse('study:sessions'))  
+    
+    except:
+
+        messages.error(
+        request, 'Please pick a session to remove or click My Sessions to go back.')
+        return HttpResponseRedirect(reverse('study:remove-session'))

@@ -185,7 +185,9 @@ SITE_ID = 2
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-GOOGLE_MAPS_API_KEY = 'AIzaSyC5n2sculxuvB2oeyTSpMahGVSymrAxuOg'
+# TODO: use .env file and python dotenv library to load environment variables
+# bots be scraping the internet to steal your secrets
+GOOGLE_MAPS_API_KEY = 'AIzaSyC5n2sculxuvB2oeyTSpMahGVSymrAxuOg' 
 
 if 'test' in sys.argv:
     DATABASES = {

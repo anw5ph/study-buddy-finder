@@ -40,13 +40,12 @@ class Course(models.Model):
     number = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(9999)], default=0)
     name = models.CharField(max_length=100, default='')
-    section = models.CharField(max_length=4, default='')
-    # Use [Student object].courses.all() to see all of a student's courses
     roster = models.ManyToManyField(
         Student, blank=True, related_name="courses")
+    # Use [Student object].courses.all() to see all of a student's courses
 
     def __str__(self):
-        return self.subject, self.number, "-", self.name
+        return f"{self.subject} {self.number} - {self.name}"
 
 
 class Study(models.Model):
@@ -58,4 +57,4 @@ class Study(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.study_subject + " " + self.study_number + " " + self.study_name
+        return f"{self.date} - {self.location}"
