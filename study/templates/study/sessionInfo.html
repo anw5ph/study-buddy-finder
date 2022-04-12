@@ -20,7 +20,7 @@
 
 <div class="container h-100">
 
-    <form class="form-example" method="post">
+    <form class="form-example" action="{% url 'study:add-attendee'%}" method="post">
         {% csrf_token %}
       
         <div class="row">
@@ -64,7 +64,7 @@
         <div class="container">
           <div class="row">
             <div class="col">
-              <button type="submit" class="btn btn-primary btn-block">Attend</button>
+              <button type="submit" class="btn btn-primary btn-block" name="session_id" value="{{ pk }}">Attend</button>
             </div>
           </div>
         </div>

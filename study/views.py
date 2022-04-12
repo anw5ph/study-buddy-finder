@@ -64,7 +64,6 @@ def CourseSessionView(request, course_pk):
     except:
         return messages.error(request, 'There are no upcoming study sessions at this time for the requested course.')
 
-    print(str(sessions_wanted))
     return render(request, 'study/courseSessions.html', {'session_list': sessions_wanted})
 
 
@@ -78,6 +77,7 @@ def SessionMoreView(request, session_pk):
         'attendees': session_wanted.attendees,
         'location': session_wanted.location,
         'course': session_wanted.course,
+        'pk': session_wanted.pk
     })
 
 
@@ -114,7 +114,8 @@ class CourseAddView(generic.ListView):
 def uploadCourse(request):
 
     student = Student.objects.get(student_user=request.user)
-    course = Course.objects.get(subject=request.POST['subject'], number=request.POST['number'])
+    course = Course.objects.get(
+        subject=request.POST['subject'], number=request.POST['number'])
     if course not in student.courses.all():
         course.roster.add(student)
     else:
@@ -133,6 +134,7 @@ class CourseRemoveView(generic.ListView):
             return None
         return student.courses.all()
 
+
 def deleteCourse(request):
 
     try:
@@ -146,9 +148,8 @@ def deleteCourse(request):
     except:
 
         messages.error(
-        request, 'Please pick a class to remove or click My Courses to go back.')
+            request, 'Please pick a class to remove or click My Courses to go back.')
         return HttpResponseRedirect(reverse('study:remove-course'))
-
 
 
 def MyAccountView(request):
@@ -181,13 +182,26 @@ def uploadProfile(request):
     return HttpResponseRedirect(reverse('study:my-account'))
 
 
+def attendSession(request):
+
+    session = get_object_or_404(Study, pk=request.POST['session_id'])
+    stud = get_object_or_404(Student, student_user=request.user)
+
+    if request.method == "POST":
+        if stud not in session.attendees.all():
+            session.attendees.add(stud)
+            session.save()
+
+    return HttpResponseRedirect(reverse('study:sessions'))
+
+
 class SessionView(generic.ListView):
     template_name = 'study/sessions.html'
     context_object_name = 'sessions_list'
 
     def get_queryset(self):
         student = Student.objects.get(student_user=self.request.user)
-        sessions = Study.objects.filter(organizer=student)
+        sessions = Study.objects.filter(attendees=student)
         return sessions
 
 
@@ -246,10 +260,10 @@ def deleteSession(request):
     try:
 
         Study.objects.get(id=request.POST['removeSession']).delete()
-        return HttpResponseRedirect(reverse('study:sessions'))  
-    
+        return HttpResponseRedirect(reverse('study:sessions'))
+
     except:
 
         messages.error(
-        request, 'Please pick a session to remove or click My Sessions to go back.')
+            request, 'Please pick a session to remove or click My Sessions to go back.')
         return HttpResponseRedirect(reverse('study:remove-session'))

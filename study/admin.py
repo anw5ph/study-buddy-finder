@@ -31,6 +31,7 @@ class StudyAdmin(admin.ModelAdmin):
     list_filter = ['date']
     search_fields = ['course']
     ordering = ['date']
+    readonly_fields = ('organizer', 'attendees')
 
 
 admin.site.register(Student, StudentAdmin)
