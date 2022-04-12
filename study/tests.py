@@ -4,7 +4,10 @@
 from __future__ import absolute_import, unicode_literals
 
 from importlib import import_module
+from msilib.schema import Error
+from multiprocessing.sharedctypes import Value
 from re import S
+from types import NoneType
 from requests.exceptions import HTTPError
 
 from django.conf import settings
@@ -27,6 +30,8 @@ from allauth.socialaccount.providers.google.provider import GoogleProvider
 
 from django.test import TestCase
 from .models import Course, Study, Student
+
+from django.utils.datastructures import MultiValueDictKeyError
 
 
 @override_settings(
@@ -432,3 +437,38 @@ class SessionRemoveTests(TestCase):
 
 
 
+class CourseRemoveTests(TestCase):
+    def no_courses(self):
+        """
+        if no courses, message is shown
+        """
+        user = create_user()
+        self.client.force_login(user)
+
+        response = self.client.get(reverse('study:remove-course'))
+
+        self.assertQuerysetEqual(response.context['course_remove_list'], [])
+
+    def no_input(self):
+        """
+        if courses are available but no input, throw a message
+        """
+        user = create_user()
+        self.client.force_login(user)
+        test_student = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+        test_course = create_course("CS", "3240", "Test Course")
+        test_course.roster.add(test_student)
+
+        response = self.client.post(reverse('study:deleteCourse'), {'removeCourse' : NoneType})
+
+        self.assertRaisesMessage(Error, 'Please pick a class to remove or click My Courses to go back.')
+
+
+
+
+
+
+    def remove_course(self):
+        """
+        if removed course, student is no longer on roster
+        """

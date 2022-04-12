@@ -1,3 +1,4 @@
+from multiprocessing.sharedctypes import Value
 from re import template
 import datetime
 from django.forms import ValidationError
@@ -7,9 +8,12 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
 from django.contrib import messages
+from django.utils.datastructures import MultiValueDictKeyError
 
 
 from .models import Student, Study, Course
+
+
 # from .forms import LocationForm
 
 # Create your views here.
@@ -131,7 +135,6 @@ class CourseRemoveView(generic.ListView):
         return student.courses.all()
 
 def deleteCourse(request):
-
     try:
 
         student = Student.objects.get(student_user=request.user)
