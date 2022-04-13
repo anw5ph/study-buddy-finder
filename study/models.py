@@ -53,7 +53,9 @@ class Study(models.Model):
     date = models.DateTimeField()
     # Use [Student object].studies.all() to see all of a student's study sessions
     attendees = models.ManyToManyField(Student, related_name="studies")
-    location = models.CharField(max_length=30)
+    address = models.CharField(max_length=255, default='')
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
