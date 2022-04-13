@@ -27,7 +27,7 @@ class CourseAdmin(admin.ModelAdmin):
 
 
 class StudyAdmin(admin.ModelAdmin):
-    list_display = ('date', 'location', 'course', 'organizer')
+    list_display = ('date', 'address', 'course', 'organizer')
     list_filter = ['date']
     search_fields = ['course']
     ordering = ['date']
