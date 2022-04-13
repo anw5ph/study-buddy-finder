@@ -25,20 +25,8 @@ class CourseView(generic.ListView):
         return student.courses.all()
 
 
-# class CourseSessionView(generic.ListView):
-#     template_name = 'study/courseSessions.html'
-#     context_object_name = 'sessions_list'
-
-#     def get_queryset(self):
-#         # try:
-#         #     sessions = Study.objects.get()
-#         # except Study.DoesNotExist:
-#         #     return None
-#         return Study.objects.all()
-
 def CourseSessionView(request, course_pk):
 
-    # course_wanted = Course.objects.get(id=course_pk)
     course_wanted = get_object_or_404(Course, pk=course_pk)
     try:
         sessions_wanted = (Study.objects.filter(
