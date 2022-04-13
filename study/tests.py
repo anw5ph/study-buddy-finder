@@ -250,8 +250,8 @@ def create_course(subject, number, name):
 def create_student(student_user, first_name='testfirstname', last_name='testlastname', computing_id='testcid', pref_name='testpref', school_year=1, bio='test bio'):
     return Student.objects.create(student_user = student_user, first_name = first_name, last_name = last_name, computing_id = computing_id, pref_name = pref_name, school_year = school_year, bio = bio)
 
-def create_study_session(organizer, date, location, course):
-    session = Study.objects.create(organizer = organizer, date = date, location = location, course = course)
+def create_study_session(organizer, date, address, latitude, longitude, course):
+    session = Study.objects.create(organizer = organizer, date = date, address = address, latitude = latitude, longitude = longitude, course = course)
     session.attendees.add(organizer)
     return session
 
@@ -271,7 +271,7 @@ class SessionAddTests(TestCase):
         #test_course.roster.add(test_student)
 
 
-        response = self.client.post(reverse('study:uploadSession'), {'date' : '01/02/2022', 'location' : 'testlocation', 'courseSession' : test_course.id})
+        response = self.client.post(reverse('study:uploadSession'), {'date' : '01/02/2022', 'address' : 'testlocation', 'latitude' : 0.0, 'longitude' : 0.0, 'courseSession' : test_course.id})
         self.assertEqual(response.status_code, 302)
         self.assertRaisesMessage(ValueError, "Date was inputted wrong. Please use the format in the box.")
 
@@ -311,7 +311,7 @@ class SessionViewTests(TestCase):
         #test_course = Course.objects.get(subject="CS", number=3240)
         #test_course.roster.add(test_student)
 
-        session1 = create_study_session(test_student, '2022-04-09', 'testloc', test_course)
+        session1 = create_study_session(test_student, '2022-04-09', 'testloc', 0.0, 0.0, test_course)
         response = self.client.get(reverse('study:sessions'))
 
         #No need for ordered = False if it is just 1 item
@@ -330,8 +330,8 @@ class SessionViewTests(TestCase):
         #test_course = Course.objects.get(subject="CS", number=3240)
         #test_course.roster.add(test_student)
 
-        session1 = create_study_session(test_student, '2022-04-09', 'testloc', test_course)
-        session2 = create_study_session(test_student, '2022-04-10', 'test2loc', test_course)
+        session1 = create_study_session(test_student, '2022-04-09', 'testloc', 0.0, 0.0, test_course)
+        session2 = create_study_session(test_student, '2022-04-10', 'test2loc', 0.0, 0.0, test_course)
         response = self.client.get(reverse('study:sessions'))
 
         #Queryset is not ordered or a list so ordered = False for this to work
@@ -370,12 +370,12 @@ class SessionRemoveTests(TestCase):
         #test_course = Course.objects.get(subject="CS", number=3240)
         #test_course.roster.add(test_student)
 
-        session1 = create_study_session(test_student, '2022-04-09', 'testloc', test_course)
+        session1 = create_study_session(test_student, '2022-04-09', 'testloc', 0.0, 0.0, test_course)
         self.client.post(reverse('study:removeSession'), {'removeSession' : session1.id})
         response = self.client.get(reverse('study:remove-session'))
 
         self.assertQuerysetEqual(response.context['remove_sessions_list'], [])
-        
+
 
 class CourseViewTests(TestCase):
 

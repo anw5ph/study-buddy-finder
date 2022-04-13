@@ -27,12 +27,9 @@
         </ul>
         {% endif %}
 
-        <!--{% if error_message %}<center><p style="color:red"><strong>{{error_message}}</strong></p></center>{% endif %}-->
-
-        Date:
-        <div class="form-floating mb-3">
-          <input class="form-control" type="datetime-local" placeholder="Default Input" name="date" id="date" value="{{ date }}" required>
-          <label style="color:gray;" for="date"><i>Input Date and Time:</i></label>
+        <div class="mb-3">
+          <label class="form-label" for="date">Date and Time:</label>
+          <input class="form-control" type="datetime-local" name="date" id="date" required>
         </div>
 
         <script>
@@ -43,26 +40,72 @@
 
           if(dd<10){
             dd='0'+dd
-          } 
+          }
           if(mm<10){
             mm='0'+mm
-          } 
+          }
 
           today = yyyy+'-'+mm+'-'+dd+"T00:00";
           document.getElementById("date").setAttribute("min", today);
-        </script> 
+        </script>
 
-        Location:
-        <div class="form-floating mb-3">
-          <input class="form-control" type="text" placeholder="Default Input" name="location" id="location" value="{{ location }}" required>
-          <label style="color:gray;"for="location"><i>Location...</i></label>
-          <a class="btn btn-success" style="position:absolute; margin-right:2px; top:15%; right:0;" href="https://www.library.virginia.edu/services/reserve-rooms/" role="button" >UVA Library</a>
+        <div class="mb-3">
+          <label class="form-label" for="location">Location:</label>
+          <input class="form-control" type="text" placeholder="Enter a location" name="location" id="location" required>
+          <input type="hidden" id="address" name="address" value="">
+          <input type="hidden" id="latitude" name="latitude" value="">
+          <input type="hidden" id="longitude" name="longitude" value="">
+          <a class="btn btn-success" style="position:absolute; margin-right:2px; top:15%; right:0;" href="https://www.library.virginia.edu/services/reserve-rooms/" role="button" target="_blank" rel="noopener noreferrer">UVA Library</a>
         </div>
 
-        Course: <!-- try a radio choice? -->
-        <div class="form-floating mb-3">
-          <!-- <input class="form-control" type="radio" placeholder="Default Input" name="courseSession" id="courseSession" value="{{ courseSession }}"> -->
-          <!-- <label style="color:gray;"for="subject"><i>Course...</i></label> -->
+        <script type="text/javascript">
+          let autocomplete;
+
+          function onPlaceChanged() {
+            var place = autocomplete.getPlace();
+
+            // User entered the name of a Place that was not suggested and
+            // pressed the Enter key, or the Place Details request failed.
+            if (!place.geometry || !place.geometry.location) {
+              var input = document.getElementById('location');
+              input.value = '';
+              window.alert("Please select a location from the autocomplete list");
+            } else {
+              document.getElementById('address').value = place.formatted_address;
+              var location = place.geometry.location;
+              document.getElementById('latitude').value = location.lat();
+              document.getElementById('longitude').value = location.lng();
+            }
+          }
+
+          function initAutocomplete() {
+            // Google Maps UVA coordinates
+            const center = { lat: 38.03361737225505, lng: -78.50800895660305 };
+            // Bias location autocomplete results to UVA grounds/Charlottesville
+            const bounds = {
+              north: center.lat + 0.15,
+              south: center.lat - 0.15,
+              east: center.lng + 0.15,
+              west: center.lng - 0.15,
+            };
+            // Attach autocomplete widget to location input
+            const input = document.getElementById("location");
+            // Autocomplete configuration
+            const options = {
+              bounds: bounds,
+              componentRestrictions: { country: "us" },
+              fields: ["formatted_address", "geometry"],
+              strictBounds: false,
+              types: ["geocode"],
+            };
+            autocomplete = new google.maps.places.Autocomplete(input, options);
+
+            autocomplete.addListener('place_changed', onPlaceChanged);
+          }
+        </script>
+
+        <span class="form-label" for="course">Course:</span>
+        <div class="mb-3" id="course">
           {% if session_add_form %}
 
           {% for course in session_add_form %}
@@ -70,8 +113,7 @@
             <input type="radio" placeholder="Default Input" name="courseSession" id="course{{ forloop.counter }}" value="{{ course.id }}" required>
             <label style="color:gray;" for="courseSession">{{ course.subject }} {{ course.number }}-{{ course.name }}</label><br>
           </div>
-          <!-- <button type="button" class="btn btn-outline-secondary" placeholder="Default Input" name="courseSession" id="courseSession" value="{{ courseSession }}">{{ course.subject }} {{ course.number}}-{{course.name}} </button> -->
-          
+
           <br>
           {% endfor %}
           {% else %}
@@ -86,6 +128,8 @@
     </div>
   </form>
 </div>
+
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5n2sculxuvB2oeyTSpMahGVSymrAxuOg&callback=initAutocomplete&libraries=places"></script>
 {% else %}
 <a href="{% provider_login_url 'google' %}">Login With Google</a>
 {% endif %}

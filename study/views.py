@@ -11,24 +11,6 @@ from requests import session
 
 
 from .models import Student, Study, Course
-# from .forms import LocationForm
-
-# Create your views here.
-
-# def map_display(request):
-#     location_instance = get_object_or_404()
-
-#     if request.method == 'POST':
-#         form = LocationForm(request.POST
-
-#         if form.is_valid():
-
-# class mapView(generic.DetailView):
-#    model = Location
-#    template_name = 'study/map.html'
-
-#    def get_queryset(self):
-#        return Location.objects
 
 
 class CourseView(generic.ListView):
@@ -60,7 +42,7 @@ def CourseSessionView(request, course_pk):
     course_wanted = get_object_or_404(Course, pk=course_pk)
     try:
         sessions_wanted = (Study.objects.filter(
-            course=course_wanted)).values('date', 'location', 'pk', 'organizer', 'attendees', 'course')
+            course=course_wanted)).values('date', 'address', 'pk', 'organizer', 'attendees', 'course')
     except:
         return messages.error(request, 'There are no upcoming study sessions at this time for the requested course.')
 
@@ -77,9 +59,11 @@ def SessionMoreView(request, session_pk):
         'organizer': session_wanted.organizer,
         'date': session_wanted.date,
         'attendees': session_wanted.attendees,
-        'location': session_wanted.location,
+        'address': session_wanted.address,
         'course': session_wanted.course,
-        'pk': session_wanted.pk
+        'pk': session_wanted.pk,
+        'latitude': session_wanted.latitude,
+        'longitude': session_wanted.longitude,
     })
 
 
@@ -229,8 +213,9 @@ def uploadSession(request):
 
             organizer=stud,
             date=request.POST['date'],
-            location=request.POST['location'],
-            # update after we get courses working
+            address=request.POST['address'],
+            latitude=request.POST['latitude'],
+            longitude=request.POST['longitude'],
             course=Course.objects.get(id=request.POST['courseSession']),
 
 
