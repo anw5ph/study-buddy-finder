@@ -64,6 +64,8 @@ def CourseSessionView(request, course_pk):
     except:
         return messages.error(request, 'There are no upcoming study sessions at this time for the requested course.')
 
+    print(str(sessions_wanted))
+
     return render(request, 'study/courseSessions.html', {'session_list': sessions_wanted})
 
 
