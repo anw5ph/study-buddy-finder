@@ -180,6 +180,19 @@ def attendSession(request):
     return HttpResponseRedirect(reverse('study:sessions'))
 
 
+def leaveSession(request):
+
+    session = get_object_or_404(Study, pk=request.POST['session_id'])
+    stud = get_object_or_404(Student, student_user=request.user)
+
+    if request.method == "POST":
+        if stud in session.attendees.all():
+            session.attendees.remove(stud)
+            session.save()
+
+    return HttpResponseRedirect(reverse('study:sessions'))
+
+
 class SessionView(generic.ListView):
     template_name = 'study/sessions.html'
     context_object_name = 'sessions_list'

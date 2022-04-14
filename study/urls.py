@@ -27,7 +27,11 @@ urlpatterns = [
     path('<int:session_pk>/info/',
          views.SessionMoreView, name='info'),
 
+    #Attend a session you have not made
     path('session/attend/', views.attendSession, name='add-attendee'),
+
+    #Leave a session you have not made
+    path('session/leave/', views.leaveSession, name='remove-attendee'),
 
     # remove a course
     path('course-remove/', views.CourseRemoveView.as_view(), name='remove-course'),
