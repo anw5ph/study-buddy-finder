@@ -11,24 +11,6 @@ from requests import session
 
 
 from .models import Student, Study, Course
-# from .forms import LocationForm
-
-# Create your views here.
-
-# def map_display(request):
-#     location_instance = get_object_or_404()
-
-#     if request.method == 'POST':
-#         form = LocationForm(request.POST
-
-#         if form.is_valid():
-
-# class mapView(generic.DetailView):
-#    model = Location
-#    template_name = 'study/map.html'
-
-#    def get_queryset(self):
-#        return Location.objects
 
 
 class CourseView(generic.ListView):
@@ -59,12 +41,12 @@ def CourseSessionView(request, course_pk):
     # course_wanted = Course.objects.get(id=course_pk)
     course_wanted = get_object_or_404(Course, pk=course_pk)
     try:
-        sessions_wanted = (Study.objects.filter(
-            course=course_wanted)).values('date', 'location', 'pk', 'organizer', 'attendees', 'course')
+        # sessions_wanted = (Study.objects.filter(
+        #     course=course_wanted)).values('date', 'address', 'pk', 'organizer', 'attendees', 'course')
+        sessions_wanted = Study.objects.filter(course=course_wanted)
     except:
         return messages.error(request, 'There are no upcoming study sessions at this time for the requested course.')
 
-    print(str(sessions_wanted))
     return render(request, 'study/courseSessions.html', {'session_list': sessions_wanted})
 
 
@@ -76,8 +58,11 @@ def SessionMoreView(request, session_pk):
         'organizer': session_wanted.organizer,
         'date': session_wanted.date,
         'attendees': session_wanted.attendees,
-        'location': session_wanted.location,
+        'address': session_wanted.address,
         'course': session_wanted.course,
+        'pk': session_wanted.pk,
+        'latitude': session_wanted.latitude,
+        'longitude': session_wanted.longitude,
     })
 
 
@@ -114,7 +99,8 @@ class CourseAddView(generic.ListView):
 def uploadCourse(request):
 
     student = Student.objects.get(student_user=request.user)
-    course = Course.objects.get(subject=request.POST['subject'], number=request.POST['number'])
+    course = Course.objects.get(
+        subject=request.POST['subject'], number=request.POST['number'])
     if course not in student.courses.all():
         course.roster.add(student)
     else:
@@ -133,6 +119,7 @@ class CourseRemoveView(generic.ListView):
             return None
         return student.courses.all()
 
+
 def deleteCourse(request):
 
     try:
@@ -146,9 +133,8 @@ def deleteCourse(request):
     except:
 
         messages.error(
-        request, 'Please pick a class to remove or click My Courses to go back.')
+            request, 'Please pick a class to remove or click My Courses to go back.')
         return HttpResponseRedirect(reverse('study:remove-course'))
-
 
 
 def MyAccountView(request):
@@ -181,13 +167,26 @@ def uploadProfile(request):
     return HttpResponseRedirect(reverse('study:my-account'))
 
 
+def attendSession(request):
+
+    session = get_object_or_404(Study, pk=request.POST['session_id'])
+    stud = get_object_or_404(Student, student_user=request.user)
+
+    if request.method == "POST":
+        if stud not in session.attendees.all():
+            session.attendees.add(stud)
+            session.save()
+
+    return HttpResponseRedirect(reverse('study:sessions'))
+
+
 class SessionView(generic.ListView):
     template_name = 'study/sessions.html'
     context_object_name = 'sessions_list'
 
     def get_queryset(self):
         student = Student.objects.get(student_user=self.request.user)
-        sessions = Study.objects.filter(organizer=student)
+        sessions = Study.objects.filter(attendees=student)
         return sessions
 
 
@@ -213,8 +212,9 @@ def uploadSession(request):
 
             organizer=stud,
             date=request.POST['date'],
-            location=request.POST['location'],
-            # update after we get courses working
+            address=request.POST['address'],
+            latitude=request.POST['latitude'],
+            longitude=request.POST['longitude'],
             course=Course.objects.get(id=request.POST['courseSession']),
 
 
@@ -246,10 +246,10 @@ def deleteSession(request):
     try:
 
         Study.objects.get(id=request.POST['removeSession']).delete()
-        return HttpResponseRedirect(reverse('study:sessions'))  
-    
+        return HttpResponseRedirect(reverse('study:sessions'))
+
     except:
 
         messages.error(
-        request, 'Please pick a session to remove or click My Sessions to go back.')
+            request, 'Please pick a session to remove or click My Sessions to go back.')
         return HttpResponseRedirect(reverse('study:remove-session'))

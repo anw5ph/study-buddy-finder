@@ -12,68 +12,97 @@
 
 <div>
     <a class="btn btn-success" style="position:absolute; margin-right:2px; top:15%; right:0;" href="{% url 'study:courses' %}" role="button" >Back to My Courses</a>
-  
+
 <hr>
-  
+
 </div>
 <br><br>
 
-<div class="container h-100">
+<div class="row justify-content-center">
+  <div class="col-lg-6">
 
-    <form class="form-example" method="post">
-        {% csrf_token %}
-      
-        <div class="row">
-          <fieldset>
-      
-            <div class="form-group row">
-                <label for="date", class="col-sm-2 col-form-label">Date</label>
-                <div class="col-sm-10">
-                  <input type="text" readonly class="form-control-plaintext" name="date" id="date" value="{{ date }}">
-                </div>   
-            </div>
-            <br>
-  
-            <div class="form-group row">
-                <label for="location", class="col-sm-2 col-form-label">Location</label>
-                <div class="col-sm-10">
-                  <input type="text" readonly class="form-control-plaintext" name="location" id="location" value="{{ location }}">
-                </div>   
-            </div>
-            <br>
-  
-            <div class="form-group row">
-                <label for="organizer", class="col-sm-2 col-form-label">Organizer</label>
-                <div class="col-sm-10">
-                  <input type="text" readonly class="form-control-plaintext" name="organizer" id="organizer" value="{{ organizer.computing_id }}">
-                </div>   
-            </div>
-            <br>
+      <form class="form-example" action="{% url 'study:add-attendee'%}" method="post">
+          {% csrf_token %}
 
-            <div class="form-group row">
-                <label for="attendees", class="col-sm-2 col-form-label">Attendee(s)</label>
-                <div class="col-sm-10">
-                  <input type="text" readonly class="form-control-plaintext" name="attendees" id="attendees" value="{{ attendees.all.count }}">
-                </div>   
+          <div class="row">
+            <fieldset>
+
+              <div class="form-group row">
+                  <label for="date", class="col-sm-2 col-form-label">Date</label>
+                  <div class="col-sm-10">
+                    <input type="text" readonly class="form-control-plaintext" name="date" id="date" value="{{ date }}">
+                  </div>
               </div>
               <br>
-  
-          </fieldset>
-          
-        </div>
-        <div class="container">
-          <div class="row">
-            <div class="col">
-              <button type="submit" class="btn btn-primary btn-block">Attend</button>
+
+              <div class="form-group row">
+                  <label for="location", class="col-sm-2 col-form-label">Location</label>
+                  <div class="col-sm-10">
+                    <input type="text" readonly class="form-control-plaintext" name="location" id="location" value="{{ address }}">
+                  </div>
+              </div>
+              <br>
+
+              <div class="form-group row">
+                  <label for="organizer", class="col-sm-2 col-form-label">Organizer</label>
+                  <div class="col-sm-10">
+                    <input type="text" readonly class="form-control-plaintext" name="organizer" id="organizer" value="{{ organizer.computing_id }}">
+                  </div>
+              </div>
+              <br>
+
+              <div class="form-group row">
+                  <label for="attendees", class="col-sm-2 col-form-label">Attendee(s)</label>
+                  <div class="col-sm-10">
+                    <input type="text" readonly class="form-control-plaintext" name="attendees" id="attendees" value="{{ attendees.all.count }}">
+                  </div>
+                </div>
+                <br>
+
+            </fieldset>
+
+          </div>
+          <div class="container">
+            <div class="row">
+              <div class="col">
+                <button type="submit" class="btn btn-primary btn-block" name="session_id" value="{{ pk }}">Attend</button>
+              </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+  </div>
+
+  <script type="text/javascript">
+    // Initialize and add the map
+    function initMap() {
+      // The session's location
+      const location = { lat: {{ latitude }}, lng: {{ longitude }} };
+      // The map, centered at the location
+      const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 18,
+        center: location,
+      });
+      // The marker, positioned at the location
+      const marker = new google.maps.Marker({
+        position: location,
+        map: map,
+      });
+    }
+  </script>
+
+
+  <div class="col-lg-6" id="map" style="height:400px; width:400px;"></div>
+</div>
+<br>
+<div class="row justify-content-center">
+  <div class="col-lg-12">
+    <h3 style="text-align: center;">Session Chat</h3>
+    <div id="tlkio" data-channel="{{course.number}}session{{pk}}" data-nickname="{{user}}" data-theme="theme--day" style="width:100%;height:400px;"></div><script async src="http://tlk.io/embed.js" type="text/javascript"></script>
+  </div>
 </div>
 
-
-  
-  {% else %}
-  <a href="{% provider_login_url 'google' %}">Login With Google</a>
-  {% endif %}
-  {% endblock %}
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5n2sculxuvB2oeyTSpMahGVSymrAxuOg&callback=initMap"></script>
+{% else %}
+<a href="{% provider_login_url 'google' %}">Login With Google</a>
+{% endif %}
+{% endblock %}

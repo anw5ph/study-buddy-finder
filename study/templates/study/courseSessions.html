@@ -12,8 +12,8 @@
 
 <div>
     <a class="btn btn-success" style="position:absolute; margin-right:2px; top:15%; right:0;" href="{% url 'study:courses' %}" role="button" >Back to My Courses</a>
-  
-  
+
+
 </div>
 <br><br>
 
@@ -21,16 +21,16 @@
     <div class="row">
       {% if session_list %}
       {% for session in session_list %}
-      <a type="button" class="btn btn-outline-secondary" href="{% url 'study:info' session.pk %}"> <b>Date:</b> {{ session.date }} <br> <b>Location:</b> {{ session.location }}  </a>
+      <a type="button" class="btn btn-outline-secondary" href="{% url 'study:info' session.pk %}"> <b>Date:</b> {{ session.date }} <br> <b>Location:</b> {{ session.address }}  </a>
       <br><br><br>
       {% endfor %}
       {% else %}
       <p class="text-center">There are no upcoming study sessions at this time for the requested course.</p>
       {% endif %}
-  
+
     </div>
 </div>
-  
+
   {% else %}
   <a href="{% provider_login_url 'google' %}">Login With Google</a>
   {% endif %}
