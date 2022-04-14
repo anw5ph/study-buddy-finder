@@ -41,8 +41,9 @@ def CourseSessionView(request, course_pk):
     # course_wanted = Course.objects.get(id=course_pk)
     course_wanted = get_object_or_404(Course, pk=course_pk)
     try:
-        sessions_wanted = (Study.objects.filter(
-            course=course_wanted)).values('date', 'address', 'pk', 'organizer', 'attendees', 'course')
+        # sessions_wanted = (Study.objects.filter(
+        #     course=course_wanted)).values('date', 'address', 'pk', 'organizer', 'attendees', 'course')
+        sessions_wanted = Study.objects.filter(course=course_wanted)
     except:
         return messages.error(request, 'There are no upcoming study sessions at this time for the requested course.')
 
