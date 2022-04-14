@@ -17,7 +17,7 @@ urlpatterns = [
     path('course-add/', views.CourseAddView.as_view(), name='course-add'),
 
     # Upload course
-    path('course-add/uploadCourse', views.uploadCourse, name='uploadCourse'),
+    path('course-add/uploadCourse', views.uploadCourse, name='upload'),
 
     # See sessions for a course
     path('<int:course_pk>/sessions/',
