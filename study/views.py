@@ -189,6 +189,10 @@ def leaveSession(request):
         if stud in session.attendees.all():
             session.attendees.remove(stud)
             session.save()
+        else:
+            messages.error(request, "You are not part of any sessions, join a session to leave one first!")
+            HttpResponseRedirect(reverse('study:sessions'))
+
 
     return HttpResponseRedirect(reverse('study:sessions'))
 

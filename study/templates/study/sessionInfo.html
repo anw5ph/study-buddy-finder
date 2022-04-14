@@ -72,17 +72,6 @@
         </form>
         <form class="form-example" action="{% url 'study:remove-attendee'%}" method="post">
           {% csrf_token %}
-
-          {% if messages %}
-          <ul class="messages">
-          {% for message in messages %}
-          <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>
-          <center><p style="color:red"><strong>{{message}}</strong></p></center>
-          </div>
-          {% endfor %}
-          </ul>
-          {% endif %}
-
           <div class="container">
             <div class="row">
               <div class="col">
