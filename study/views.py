@@ -272,3 +272,5 @@ def deleteSession(request):
         messages.error(
             request, 'Please pick a session to remove or click My Sessions to go back.')
         return HttpResponseRedirect(reverse('study:remove-session'))
+
+
