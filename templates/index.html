@@ -80,6 +80,7 @@
     <h1 class="fs-1 mb-3 text-white">Meet Classmates. Study. Make Friends.</h1>
     <p class="fs-3 px-5 mb-4 text-white">Want to study with your peers, but you forgot how to socialize thanks to Covid? Be awkward no more. Find out who's studying now, and join in! Just don't forget to introduce yourself first.</p>
     {% if user.is_authenticated %}
+    <!-- <p class="fs-6 px-5 mb-4 text-white">Hey are you a new user? Make sure to update your profile before adding courses and signing up for study sessions!</p> -->
     <a class="btn btn-primary btn-lg m-auto" href="{% url 'study:courses' %}">Find study buddies!</a>
     {% else %}
     <a class="btn btn-primary btn-lg m-auto" href="{% provider_login_url 'google' %}">Login</a>
