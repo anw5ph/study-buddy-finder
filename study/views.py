@@ -53,6 +53,11 @@ def CourseSessionView(request, course_pk):
 def SessionMoreView(request, session_pk):
 
     session_wanted = get_object_or_404(Study, pk=session_pk)
+    stud = Student.objects.get(student_user = request.user)
+    buttonswitch = ''
+    for person in session_wanted.attendees.all():
+        if stud == person:
+            buttonswitch = stud
 
     return render(request, 'study/sessionInfo.html', {
         'organizer': session_wanted.organizer,
@@ -63,6 +68,10 @@ def SessionMoreView(request, session_pk):
         'pk': session_wanted.pk,
         'latitude': session_wanted.latitude,
         'longitude': session_wanted.longitude,
+        
+        #added this for html file
+        'student' : stud,
+        'det' : buttonswitch
     })
 
 
