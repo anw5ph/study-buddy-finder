@@ -1,15 +1,7 @@
 from django.contrib import admin
-from .models import Student, Study, Course  # , Location
-# from django_google_maps import widgets as map_widgets
-# from django_google_maps import fields as map_fields
-
-# class LocationAdmin(admin.ModelAdmin):
-#     formfield_overrides = {
-#         map_fields.AddressField: {'widget': map_widgets.GoogleMapsAddressWidget},
-#     }
-
-# admin.site.register(Location, LocationAdmin)
-
+from .models import Student, Study, Course
+from django_google_maps import widgets as map_widgets
+from django_google_maps import fields as map_fields
 
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('computing_id', 'last_name', 'first_name',
@@ -32,6 +24,9 @@ class StudyAdmin(admin.ModelAdmin):
     search_fields = ['course']
     ordering = ['date']
     readonly_fields = ('organizer', 'attendees')
+    formfield_overrides = {
+        map_fields.AddressField: {'widget': map_widgets.GoogleMapsAddressWidget},
+    }
 
 
 admin.site.register(Student, StudentAdmin)

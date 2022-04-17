@@ -59,4 +59,4 @@ class Study(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.date} - {self.location}"
+        return f"{self.date} - {self.address}"

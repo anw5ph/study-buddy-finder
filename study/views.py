@@ -25,20 +25,8 @@ class CourseView(generic.ListView):
         return student.courses.all()
 
 
-# class CourseSessionView(generic.ListView):
-#     template_name = 'study/courseSessions.html'
-#     context_object_name = 'sessions_list'
-
-#     def get_queryset(self):
-#         # try:
-#         #     sessions = Study.objects.get()
-#         # except Study.DoesNotExist:
-#         #     return None
-#         return Study.objects.all()
-
 def CourseSessionView(request, course_pk):
 
-    # course_wanted = Course.objects.get(id=course_pk)
     course_wanted = get_object_or_404(Course, pk=course_pk)
     try:
         # sessions_wanted = (Study.objects.filter(
@@ -46,6 +34,8 @@ def CourseSessionView(request, course_pk):
         sessions_wanted = Study.objects.filter(course=course_wanted)
     except:
         return messages.error(request, 'There are no upcoming study sessions at this time for the requested course.')
+
+    print(str(sessions_wanted))
 
     return render(request, 'study/courseSessions.html', {'session_list': sessions_wanted})
 
