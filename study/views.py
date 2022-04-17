@@ -29,8 +29,9 @@ def CourseSessionView(request, course_pk):
 
     course_wanted = get_object_or_404(Course, pk=course_pk)
     try:
-        sessions_wanted = (Study.objects.filter(
-            course=course_wanted)).values('date', 'address', 'pk', 'organizer', 'attendees', 'course')
+        # sessions_wanted = (Study.objects.filter(
+        #     course=course_wanted)).values('date', 'address', 'pk', 'organizer', 'attendees', 'course')
+        sessions_wanted = Study.objects.filter(course=course_wanted)
     except:
         return messages.error(request, 'There are no upcoming study sessions at this time for the requested course.')
 
@@ -42,6 +43,11 @@ def CourseSessionView(request, course_pk):
 def SessionMoreView(request, session_pk):
 
     session_wanted = get_object_or_404(Study, pk=session_pk)
+    stud = Student.objects.get(student_user = request.user)
+    buttonswitch = ''
+    for person in session_wanted.attendees.all():
+        if stud == person:
+            buttonswitch = stud
 
     return render(request, 'study/sessionInfo.html', {
         'organizer': session_wanted.organizer,
@@ -52,6 +58,10 @@ def SessionMoreView(request, session_pk):
         'pk': session_wanted.pk,
         'latitude': session_wanted.latitude,
         'longitude': session_wanted.longitude,
+        
+        #added this for html file
+        'student' : stud,
+        'det' : buttonswitch
     })
 
 
@@ -169,6 +179,25 @@ def attendSession(request):
     return HttpResponseRedirect(reverse('study:sessions'))
 
 
+def leaveSession(request):
+
+    session = get_object_or_404(Study, pk=request.POST['session_id'])
+    stud = get_object_or_404(Student, student_user=request.user)
+
+    if request.method == "POST":
+        if stud in session.attendees.all():
+            session.attendees.remove(stud)
+            session.save()
+            if len(session.attendees.all()) == 0:
+                session.delete()
+        else:
+            messages.error(request, "You are not part of any sessions, join a session to leave one first!")
+            HttpResponseRedirect(reverse('study:sessions'))
+
+
+    return HttpResponseRedirect(reverse('study:sessions'))
+
+
 class SessionView(generic.ListView):
     template_name = 'study/sessions.html'
     context_object_name = 'sessions_list'
@@ -242,3 +271,5 @@ def deleteSession(request):
         messages.error(
             request, 'Please pick a session to remove or click My Sessions to go back.')
         return HttpResponseRedirect(reverse('study:remove-session'))
+
+

@@ -17,6 +17,15 @@
 
 
 <div class="container h-100" style="top:50%; bottom:50%; width:100%;">
+  {% if messages %}
+  <ul class="messages">
+  {% for message in messages %}
+  <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+  <center><p style="color:red"><strong>{{message}}</strong></p></center>
+  </div>
+  {% endfor %}
+  </ul>
+  {% endif %}
   <div class="row">
     {% if sessions_list %}
     {% for session in sessions_list %}

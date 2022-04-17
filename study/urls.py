@@ -17,7 +17,7 @@ urlpatterns = [
     path('course-add/', views.CourseAddView.as_view(), name='course-add'),
 
     # Upload course
-    path('course-add/upload', views.uploadCourse, name='upload'),
+    path('course-add/uploadCourse', views.uploadCourse, name='upload'),
 
     # See sessions for a course
     path('<int:course_pk>/sessions/',
@@ -27,7 +27,11 @@ urlpatterns = [
     path('<int:session_pk>/info/',
          views.SessionMoreView, name='info'),
 
+    #Attend a session you have not made
     path('session/attend/', views.attendSession, name='add-attendee'),
+
+    #Leave a session you have not made
+    path('session/leave/', views.leaveSession, name='remove-attendee'),
 
     # remove a course
     path('course-remove/', views.CourseRemoveView.as_view(), name='remove-course'),
@@ -36,6 +40,17 @@ urlpatterns = [
 
     # View sessions
     path('sessions/', views.SessionView.as_view(), name='sessions'),
+    # Add session
+    path('session-add/', views.SessionAddView.as_view(), name='session-add'),
+
+    # Upload session
+    path('session-add/uploadSession', views.uploadSession, name='uploadSession'),
+
+    # Study sessions for a course
+    #path('<int:course-number>-<int:course-section>/', views.AllSessionView.as_view(), name='all-sessions'),
+    # Individual study session
+    #path(/session/<int:pk>/', views.SessionView.as_view(), name='session'),
+    # Add study session
 
     # Add study session
     path('session-add/', views.SessionAddView.as_view(), name='add-session'),
@@ -55,5 +70,7 @@ urlpatterns = [
 
     path('my-account/update-profile/upload',
          views.uploadProfile, name='upload-profile'),
+
+    
 
 ]
