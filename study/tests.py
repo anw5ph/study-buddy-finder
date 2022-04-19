@@ -368,7 +368,7 @@ class SessionRemoveTests(TestCase):
 
         response = self.client.get(reverse('study:remove-session'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "You have not added any sessions yet! Go and add some and then come back here to remove a session if needed!")
+        self.assertContains(response, "You have not created any sessions yet! Go and make some and then come back here to remove a session if needed!")
         self.assertQuerysetEqual(response.context['remove_sessions_list'], [])
 
     def test_remove_one_session(self):
