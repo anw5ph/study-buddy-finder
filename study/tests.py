@@ -337,17 +337,17 @@ class SessionViewTests(TestCase):
         #Queryset is not ordered or a list so ordered = False for this to work
         self.assertQuerysetEqual(response.context['sessions_list'], [session1, session2], ordered = False)
 
-        def test_session_info(self):
-            user = create_user()
-            self.client.force_login(user)
-            test_student1 = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
-            test_student2 = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+        #def test_session_info(self):
+        #    user = create_user()
+        #    self.client.force_login(user)
+        #    test_student1 = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
+        #    test_student2 = create_student(user, 'testfirstname', 'testlastname', 'testcid', 'testpref', int(1), 'test bio')
 
-            session = create_study_session(test_student1, '2022-04-09', 'testloc', 0.0, 0.0, test_course)
-            session.add(test_student1)
-            session.add(test_student2)
+        #    session = create_study_session(test_student1, '2022-04-09', 'testloc', 0.0, 0.0, test_course)
+        #    session.add(test_student1)
+        #    session.add(test_student2)
 
-            response = self.client.post(reverse('study:<int:session_pk>/info/') {})
+        #    response = self.client.post(reverse('study:<int:session_pk>/info/') {})
 
 
 
