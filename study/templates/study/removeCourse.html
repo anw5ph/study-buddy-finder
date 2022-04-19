@@ -33,8 +33,12 @@
           {% if course_remove_list %}
           {% for course in course_remove_list %}
           <div class = "word-wrap">
+
+            <label><input type="radio" placeholder="Default Input" name="removeCourse" id="course{{ forloop.counter }}" value="{{ course.id }}" required>{{ course.subject }} {{ course.number }}-{{ course.name }}</label><br>
+              <!--
               <input type="radio" placeholder="Default Input" name="removeCourse" id="course{{ forloop.counter }}" value="{{ course.id }}">
               <label style="color:gray;" for="removeCourse">{{ course.subject }} {{ course.number}}-{{course.name}}</label><br>
+              -->
           </div>
 
           <br>

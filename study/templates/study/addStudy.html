@@ -110,8 +110,14 @@
 
           {% for course in session_add_form %}
           <div class = "word-wrap">
+
+            <label><input type="radio" placeholder="Default Input" name="courseSession" id="course{{ forloop.counter }}" value="{{ course.id }}" required>{{ course.subject }} {{ course.number }}-{{ course.name }}</label><br>
+
+            <!--
             <input type="radio" placeholder="Default Input" name="courseSession" id="course{{ forloop.counter }}" value="{{ course.id }}" required>
             <label style="color:gray;" for="courseSession">{{ course.subject }} {{ course.number }}-{{ course.name }}</label><br>
+            -->
+
           </div>
 
           <br>
