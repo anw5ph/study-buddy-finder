@@ -18,10 +18,7 @@ class CourseView(generic.ListView):
     context_object_name = 'courses_list'
 
     def get_queryset(self):
-        try:
-            student = Student.objects.get(student_user=self.request.user)
-        except Student.DoesNotExist:
-            return None
+        student, _ = Student.objects.get_or_create(student_user=self.request.user)
         return student.courses.all()
 
 
@@ -58,7 +55,6 @@ def SessionMoreView(request, session_pk):
         'pk': session_wanted.pk,
         'latitude': session_wanted.latitude,
         'longitude': session_wanted.longitude,
-        
         #added this for html file
         'student' : stud,
         'det' : buttonswitch
@@ -203,7 +199,7 @@ class SessionView(generic.ListView):
     context_object_name = 'sessions_list'
 
     def get_queryset(self):
-        student = Student.objects.get(student_user=self.request.user)
+        student, _ = Student.objects.get_or_create(student_user=self.request.user)
         sessions = Study.objects.filter(attendees=student)
         return sessions
 
@@ -271,5 +267,3 @@ def deleteSession(request):
         messages.error(
             request, 'Please pick a session to remove or click My Sessions to go back.')
         return HttpResponseRedirect(reverse('study:remove-session'))
-
-
