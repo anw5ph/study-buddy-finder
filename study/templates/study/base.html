@@ -46,7 +46,7 @@
             <a class="nav-link text-white {% block account-link-style %}{% endblock %}" href="{% url 'study:my-account' %}">My Account</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" href="/logout">Logout</a>
+            <a class="btn nav-link text-white btn-sm" id="btn-nav" data-bs-toggle="modal" data-bs-target="#exampleModal">Logout</a>
           </li>
           {% else %}
           <li class="nav-item">
@@ -57,6 +57,27 @@
       </div>
     </nav>
   </header>
+
+  
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"><i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp; Logout</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <span class="text-danger"><i class="fas fa-sign-out-alt fa-3x mt-4"></i></span>
+        <div class="mt-4 text-danger" style="height: 50px;">Are you sure you want to logout?</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+        <a href="{% url 'logout' %}" type="button" class="btn btn-outline-danger btn-sm">Logout</a>
+      </div>
+    </div>
+  </div>
+</div>
 
   <main class="{% block content-style %}container-fluid d-flex flex-column{% endblock %}">
     {% block content %}{% endblock %}
