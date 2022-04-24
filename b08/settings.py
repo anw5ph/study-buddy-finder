@@ -33,6 +33,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'b08project.herokuapp.com']
 
+SECURE_SSL_REDIRECT = True
 
 # Application definition
 
