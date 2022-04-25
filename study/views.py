@@ -121,6 +121,13 @@ def deleteCourse(request):
 
         student = Student.objects.get(student_user=request.user)
         course = Course.objects.get(id=request.POST['removeCourse'])
+
+        studies = Study.objects.all()
+
+        for study in studies:
+            if(study.organizer == student and study.course == course):
+                study.delete()
+
         course.roster.remove(student)
 
         return HttpResponseRedirect(reverse('study:courses'))
