@@ -1,5 +1,5 @@
 from re import template
-import datetime
+from datetime import datetime
 from django.forms import ValidationError
 from django.utils import timezone
 from django.http import HttpResponseRedirect
@@ -18,7 +18,8 @@ class CourseView(generic.ListView):
     context_object_name = 'courses_list'
 
     def get_queryset(self):
-        student, _ = Student.objects.get_or_create(student_user=self.request.user)
+        student, _ = Student.objects.get_or_create(
+            student_user=self.request.user)
         return student.courses.all()
 
 
@@ -28,7 +29,9 @@ def CourseSessionView(request, course_pk):
     try:
         # sessions_wanted = (Study.objects.filter(
         #     course=course_wanted)).values('date', 'address', 'pk', 'organizer', 'attendees', 'course')
-        sessions_wanted = Study.objects.filter(course=course_wanted)
+        now = datetime.today()
+        sessions_wanted = Study.objects.filter(
+            course=course_wanted, date__gte=now)
     except:
         return messages.error(request, 'There are no upcoming study sessions at this time for the requested course.')
 
@@ -40,7 +43,7 @@ def CourseSessionView(request, course_pk):
 def SessionMoreView(request, session_pk):
 
     session_wanted = get_object_or_404(Study, pk=session_pk)
-    stud = Student.objects.get(student_user = request.user)
+    stud = Student.objects.get(student_user=request.user)
     buttonswitch = ''
     for person in session_wanted.attendees.all():
         if stud == person:
@@ -55,9 +58,9 @@ def SessionMoreView(request, session_pk):
         'pk': session_wanted.pk,
         'latitude': session_wanted.latitude,
         'longitude': session_wanted.longitude,
-        #added this for html file
-        'student' : stud,
-        'det' : buttonswitch
+        # added this for html file
+        'student': stud,
+        'det': buttonswitch
     })
 
 
@@ -187,9 +190,9 @@ def leaveSession(request):
             if len(session.attendees.all()) == 0:
                 session.delete()
         else:
-            messages.error(request, "You are not part of any sessions, join a session to leave one first!")
+            messages.error(
+                request, "You are not part of any sessions, join a session to leave one first!")
             HttpResponseRedirect(reverse('study:sessions'))
-
 
     return HttpResponseRedirect(reverse('study:sessions'))
 
@@ -199,7 +202,8 @@ class SessionView(generic.ListView):
     context_object_name = 'sessions_list'
 
     def get_queryset(self):
-        student, _ = Student.objects.get_or_create(student_user=self.request.user)
+        student, _ = Student.objects.get_or_create(
+            student_user=self.request.user)
         sessions = Study.objects.filter(attendees=student)
         return sessions
 

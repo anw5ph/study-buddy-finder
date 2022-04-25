@@ -89,17 +89,16 @@ WSGI_APPLICATION = 'b08.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-import sys
 
 if 'test' in sys.argv:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR/ 'db.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 else:
-    DATABASES= {
+    DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'd4en50skg510m4',
@@ -109,7 +108,7 @@ else:
             'PORT': '5432', }
     }
 
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIAL_URL = '/media/'
 
 
@@ -183,23 +182,23 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 SITE_ID = 2
-SOCIALACCOUNT_LOGIN_ON_GET=True
+SOCIALACCOUNT_LOGIN_ON_GET = True
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 # TODO: use .env file and python dotenv library to load environment variables
 # bots be scraping the internet to steal your secrets
-GOOGLE_MAPS_API_KEY = 'AIzaSyC5n2sculxuvB2oeyTSpMahGVSymrAxuOg' 
+GOOGLE_MAPS_API_KEY = 'AIzaSyC5n2sculxuvB2oeyTSpMahGVSymrAxuOg'
 
 if 'test' in sys.argv:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR/ 'db.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 else:
-    DATABASES= {
+    DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
             'NAME': 'd4en50skg510m4',
