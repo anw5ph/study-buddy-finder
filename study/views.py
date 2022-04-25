@@ -187,6 +187,13 @@ def leaveSession(request):
     session = get_object_or_404(Study, pk=request.POST['session_id'])
     stud = get_object_or_404(Student, student_user=request.user)
 
+    if stud == session.organizer:
+        session.delete()
+
+        return HttpResponseRedirect(reverse('study:sessions'))
+
+
+
     if request.method == "POST":
         if stud in session.attendees.all():
             session.attendees.remove(stud)
