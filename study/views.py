@@ -124,6 +124,13 @@ def deleteCourse(request):
 
         student = Student.objects.get(student_user=request.user)
         course = Course.objects.get(id=request.POST['removeCourse'])
+
+        studies = Study.objects.all()
+
+        for study in studies:
+            if(study.organizer == student and study.course == course):
+                study.delete()
+
         course.roster.remove(student)
 
         return HttpResponseRedirect(reverse('study:courses'))
@@ -182,6 +189,13 @@ def leaveSession(request):
 
     session = get_object_or_404(Study, pk=request.POST['session_id'])
     stud = get_object_or_404(Student, student_user=request.user)
+
+    if stud == session.organizer:
+        session.delete()
+
+        return HttpResponseRedirect(reverse('study:sessions'))
+
+
 
     if request.method == "POST":
         if stud in session.attendees.all():
