@@ -1,5 +1,6 @@
 from re import template
 from datetime import datetime
+from django.db.models.functions import Now
 from django.forms import ValidationError
 from django.utils import timezone
 from django.http import HttpResponseRedirect
@@ -29,9 +30,9 @@ def CourseSessionView(request, course_pk):
     try:
         # sessions_wanted = (Study.objects.filter(
         #     course=course_wanted)).values('date', 'address', 'pk', 'organizer', 'attendees', 'course')
-        now = datetime.today()
+        # now = datetime.today()
         sessions_wanted = Study.objects.filter(
-            course=course_wanted, date__gte=now)
+            course=course_wanted, date__gte=Now())
     except:
         return messages.error(request, 'There are no upcoming study sessions at this time for the requested course.')
 
